@@ -18,7 +18,7 @@ include('rememberme.php');
     <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="styling.css" rel="stylesheet">
       <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Arvo" />
-  
+
   </head>
   <body>
       <!--Navigation Bar-->
@@ -211,7 +211,7 @@ include('rememberme.php');
         <!--Footer-->
         <div class="footer">
             <div class="container">
-                <p>Ishwarya.com Copyright &copy;<?php $today = date("Y"); echo $today?>.</p>
+                <p>expand.com Copyright &copy;<?php $today = date("Y"); echo $today?>.</p>
             </div>
         </div>
 

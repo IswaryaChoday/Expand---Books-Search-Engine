@@ -110,7 +110,7 @@ if(!isset($_SESSION['user_id'])){
         <!--Footer-->
         <div class="footer">
             <div class="container">
-                <p>Ishwarya.com Copyright &copy;<?php $today = date("Y"); echo $today?>.</p>
+                <p>expand.com Copyright &copy;<?php $today = date("Y"); echo $today?>.</p>
             </div>
         </div>
 
