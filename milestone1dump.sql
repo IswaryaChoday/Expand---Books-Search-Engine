@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 08, 2019 at 04:30 AM
+-- Generation Time: Oct 08, 2019 at 02:01 PM
 -- Server version: 8.0.17
 -- PHP Version: 7.3.9
 
@@ -118,9 +118,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `activation`, `activation2`) VALUES
-(15, 'ishwaryaaaa', 'ishwarya.bolla96@gmail.com', '6b806ab23d527b3473f81062395dda3341a014d742e1c98ddb8e3645c59a46bd', 'activated', '0'),
 (16, 'rahul', 'rdump001@odu.edu', '6b806ab23d527b3473f81062395dda3341a014d742e1c98ddb8e3645c59a46bd', 'bad10d28d38f3809ca86e413d012f879', ''),
-(24, 'dinesh', 'dinesh.paladhi@gmail.com', '134563d4e440f0e418b0f382f23a2cf301af6d7f648ccfae9895018345d779a3', 'cd3ddf9bfcd8b42bda8a8392403623cf', NULL);
+(24, 'dinesh', 'dinesh.paladhi@gmail.com', '134563d4e440f0e418b0f382f23a2cf301af6d7f648ccfae9895018345d779a3', 'cd3ddf9bfcd8b42bda8a8392403623cf', NULL),
+(25, 'prateek', 'pkeer001@odu.edu', '6b806ab23d527b3473f81062395dda3341a014d742e1c98ddb8e3645c59a46bd', 'c4ef624f555b5261a030abff38a88ebb', NULL),
+(26, 'Akshata', 'achal002@odu.edu', '6b806ab23d527b3473f81062395dda3341a014d742e1c98ddb8e3645c59a46bd', '404ac02e076cfc83d44654e72df2095e', NULL),
+(27, 'Srishti', 'spram001@odu.edu', '6b806ab23d527b3473f81062395dda3341a014d742e1c98ddb8e3645c59a46bd', '9aa047b7c043df4fa84fac59dc2a314a', NULL);
 
 --
 -- Indexes for dumped tables
@@ -164,7 +166,7 @@ ALTER TABLE `rememberme`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

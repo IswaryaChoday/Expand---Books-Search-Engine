@@ -18,6 +18,7 @@ include('rememberme.php');
     <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="styling.css" rel="stylesheet">
       <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Arvo" />
+  
   </head>
   <body>
       <!--Navigation Bar-->
@@ -51,9 +52,10 @@ include('rememberme.php');
             <p>Discover Amazing Books</p>
 
             <button type="button" class="btn btn-lg green signup" data-target="#signupModal" data-toggle="modal">Sign up-It's free</button>
-            <!-- Search Bar -->
+
         </div>
         <!-- Search form -->
+        <br><br><br>
         <div class="search-container">
         	<div class="row">
                    <div id="custom-search-input">

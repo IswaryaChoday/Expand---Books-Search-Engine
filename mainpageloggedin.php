@@ -15,6 +15,7 @@ if(!isset($_SESSION['user_id'])){
     <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="styling.css" rel="stylesheet">
       <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Arvo" />
+
       <style>
         #container{
             margin-top:120px;
@@ -75,6 +76,9 @@ if(!isset($_SESSION['user_id'])){
                 <button id="done" type="button" class="btn green btn-lg pull-right">Done</button>
                 <button id="allBooks" type="button" class="btn btn-info btn-lg">All Books</button>
               </div>
+              <br>
+              <center><h1><font size="15">Expand</font></h1></center>
+              <center><p>Discover Amazing Books</p></center>
               <div id ="Notepad">
                 <textarea rows="10">
                 </textarea>
@@ -87,6 +91,7 @@ if(!isset($_SESSION['user_id'])){
         </div>
 
         <!-- Search form -->
+        <br><br><br><br><br><br>
         <div class="search-container">
         	<div class="row">
                    <div id="custom-search-input">

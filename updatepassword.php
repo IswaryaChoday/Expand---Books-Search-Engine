@@ -38,6 +38,7 @@ if(empty($_POST["currentpassword"])){
 }
 
 if(empty($_POST["password"])){
+    $errors='';
     $errors .= $missingPassword;
 }elseif(!(strlen($_POST["password"])>6
          and preg_match('/[A-Z]/',$_POST["password"])
@@ -52,12 +53,14 @@ if(empty($_POST["password"])){
     }else{
         $password2 = filter_var($_POST["password2"], FILTER_SANITIZE_STRING);
         if($password !== $password2){
+            $errors='';
             $errors .= $differentPassword;
         }
     }
 }
 
 //if there is an error print error message
+$errors='';
 if($errors){
     $resultMessage = "<div class='alert alert-danger'>$errors</div>";
     echo $resultMessage;
