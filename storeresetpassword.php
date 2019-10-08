@@ -51,6 +51,7 @@ if(empty($_POST["password"])){
     }else{
         $password2 = filter_var($_POST["password2"], FILTER_SANITIZE_STRING);
         if($password !== $password2){
+            $errors='';
             $errors .= $differentPassword;
         }
     }
