@@ -7,6 +7,31 @@ include('logout.php');
 
 //remember me
 include('rememberme.php');
+
+require_once 'init.php';
+
+//Title search
+if(isset($_GET['q'])) {
+
+	$q =htmlspecialchars($_GET['q']);
+	$query = $es->search([
+		'body' => [
+		    'query' => [
+		        'bool' => [
+			    'should' => [
+			        'match' => ['title' => $q]
+              //'match' => ['isbn' => $q]
+				//'match' => ['text' => $q]
+		        ]
+		    ]
+                ]
+	    ]
+	]);
+	if($query['hits']['total'] >=1 ) {
+		$results = $query['hits']['hits'];
+	}
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,7 +50,7 @@ include('rememberme.php');
       <nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
         <div class="container-fluid">
                <div class="navbar-header">
-                 <a href="http://localhost/Web-Programming/mainpageloggedin.php" class="navbar-brand">Search Engine</a>
+                 <a href="http://localhost/Web-Programming/mainpageloggedin.php" class="navbar-brand">Expand</a>
                  <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
                      <span style="color:blue" class="sr-only">Toggle navigation</span>
                      <span class="icon-bar"></span>
@@ -36,7 +61,9 @@ include('rememberme.php');
                      <div class="navbar-collapse collapse"id="navbarCollapse">
                      <ul class="nav navbar-nav">
                        <li class="active"><a href="mainpageloggedin.php">Home</a></li>
-                       <li><a href="#">Help</a></li>
+
+											 <li><a href="add.php">Add Books</a></li>
+                       <!-- <li><a href="#">Help</a></li> -->
                        <li><a href="#">Contact us</a></li>
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
@@ -57,19 +84,31 @@ include('rememberme.php');
         <!-- Search form -->
         <br><br><br>
         <div class="search-container">
+          <form action="display.php" method="get" autocomplete="off">
         	<div class="row">
                    <div id="custom-search-input">
                                     <div class="input-group col-md-12">
-                                        <input type="text" class="  search-query form-control" placeholder="Search" />
+                                        <input type="text" name="q" class="search-query form-control" placeholder="Search">
                                         <span class="input-group-btn">
-                                            <button class="btn btn-danger" type="button">
+                                            <button class="btn btn-danger" type="submit" value="search">
                                                 <span class=" glyphicon glyphicon-search"></span>
                                             </button>
                                         </span>
                                     </div>
-                                </div>
+                  </div>
         	</div>
+        </form>
         </div>
+
+        <div class="advanced-search">
+          <br>
+          <center><a href="#advancedsearchModal" data-toggle="modal"><font color="black">Advanced Search</font></a></center>
+        </div>
+
+				<!-- <div class="advanced-search">
+          <br>
+          <center><a href="add.php">Add Books</a></center>
+        </div>-->
 
 
         <!--Login Form-->
@@ -170,6 +209,54 @@ include('rememberme.php');
         </div>
         </form>
 
+        <!--Advanced Search  Form-->
+        <form method="get" action="advance.php" id="advancedsearchform">
+          <div class="modal" id="advancedsearchModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button class="close" data-dismiss="modal">
+                      &times;
+                    </button>
+                    <h4 id="myModalLabel">
+                      Search your books by :
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <!--Advanced Search message from PHP file-->
+                    <div id="signupmessage"></div>
+
+                    <div class="form-group">
+                        <label for="title" class="sr-only">Title:</label>
+                        <input class="form-control" type="text" name="title" id="title" placeholder="Title" maxlength="300">
+                    </div>
+                    <div class="form-group">
+                        <label for="author" class="sr-only">Author:</label>
+                        <input class="form-control" type="text" name="author" id="author" placeholder="Author" maxlength="50q0">
+                    </div>
+                    <div class="form-group">
+                        <label for="isbn" class="sr-only">ISBN:</label>
+                        <input class="form-control" type="text" name="isbn" id="isbn" placeholder="ISBN" maxlength="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="average_rating" class="sr-only">Rating</label>
+                        <input class="form-control" type="text" name="average_rating" id="average_rating" placeholder="Rating" maxlength="30">
+                    </div>
+                    <!--<div class="form-group">
+                        <label for="password2" class="sr-only">Confirm password</label>
+                        <input class="form-control" type="password" name="password2" id="password2" placeholder="Subject" maxlength="30">
+                    </div>-->
+                </div>
+                <div class="modal-footer">
+                    <input class="btn green" name="search" type="submit" value="Search">
+                </div>
+            </div>
+        </div>
+        </div>
+        </form>
+
+
         <!--Forgot Password? Form-->
         <form method="post" id="forgotpasswordform">
           <div class="modal" id="forgotpasswordModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -214,13 +301,8 @@ include('rememberme.php');
                 <p>expand.com Copyright &copy;<?php $today = date("Y"); echo $today?>.</p>
             </div>
         </div>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="index.js"></script>
-    <!-- <script src="javascript.js"></script> -->
 </body>
 </html>

@@ -106,6 +106,10 @@ if(!isset($_SESSION['user_id'])){
                                 </div>
         	</div>
         </div>
+        <div class="advanced-search">
+          <br>
+          <center><a href="https://www.w3schools.com/html/" target="_blank">Advanced Search</a></center>
+        </div>
 
         <!--Footer-->
         <div class="footer">
