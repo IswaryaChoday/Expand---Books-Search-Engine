@@ -18,13 +18,20 @@ if(!isset($_SESSION['user_id'])){
 
       <style>
         #container{
-            margin-top:120px;
+            margin-top:0px;
         }
         #allBooks, #Notepad, #done{
             display: none;
         }
         .buttons{
             margin-bottom: 20px;
+        }
+        .jumbotron{
+            background-color: transparent;
+            text-align: center;
+            letter-spacing: 2.5px;
+            padding: 0px;
+            margin-top: 150px;
         }
         textarea{
           width: 100%;
@@ -55,9 +62,10 @@ if(!isset($_SESSION['user_id'])){
                      <div class="navbar-collapse collapse"id="navbarCollapse">
                      <ul class="nav navbar-nav">
                        <li><a href="profile.php">Profile</a></li>
-                       <li><a href="#">Help</a></li>
-                       <li><a href="#">Contact us</a></li>
-                       <li class="active"><a href="#">My Books</a></li>
+                       <!-- <li><a href="#">Help</a></li> -->
+                       <li><a href="add.php">Add Books</a></li>
+                       <li><a href="favourite.php">Favourites</a></li>
+                       <li class="active"><a href="#">Home</a></li>
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
                          <li><a href="#">Logged in as <b><?php echo $_SESSION['username']?></b></a></li>
@@ -71,14 +79,22 @@ if(!isset($_SESSION['user_id'])){
           <div class="row">
             <div class="col-md-offset-3 col-md-6">
               <div class="buttons">
-                <button id="addBooks" type="button" class="btn btn-info btn-lg">Add Books</button>
-                <button id="edit" type="button" class="btn btn-info btn-lg pull-right">Edit</button>
+                <!-- <button id="addBooks" type="button" class="btn btn-info btn-lg">Add Books</button> -->
+                <!-- <button id="edit" type="button" class="btn btn-info btn-lg pull-right">Edit</button> -->
                 <button id="done" type="button" class="btn green btn-lg pull-right">Done</button>
                 <button id="allBooks" type="button" class="btn btn-info btn-lg">All Books</button>
               </div>
               <br>
-              <center><h1><font size="15">Expand</font></h1></center>
-              <center><p>Discover Amazing Books</p></center>
+              <!-- <center><h1><font size="15">Expand</font></h1></center> -->
+              <!-- <center><p>Discover Amazing Books</p></center> -->
+              <div class="jumbotron" id="myContainer">
+
+                  <h1>Expand</h1>
+                  <p>Discover Amazing Books</p>
+
+                  <!-- <button type="button" class="btn btn-lg green signup" data-target="#signupModal" data-toggle="modal">Sign up-It's free</button> -->
+
+              </div>
               <div id ="Notepad">
                 <textarea rows="10">
                 </textarea>
@@ -91,25 +107,71 @@ if(!isset($_SESSION['user_id'])){
         </div>
 
         <!-- Search form -->
-        <br><br><br><br><br><br>
+        <br><br><br>
         <div class="search-container">
-        	<div class="row">
+          <form action="display2.php" method="get" autocomplete="off">
+          <div class="row">
                    <div id="custom-search-input">
                                     <div class="input-group col-md-12">
-                                        <input type="text" class="  search-query form-control" placeholder="Search" />
+                                        <input type="text" name="q" class="search-query form-control" placeholder="Search">
                                         <span class="input-group-btn">
-                                            <button class="btn btn-danger" type="button">
+                                            <button class="btn btn-danger" type="submit" value="search">
                                                 <span class=" glyphicon glyphicon-search"></span>
                                             </button>
                                         </span>
                                     </div>
-                                </div>
-        	</div>
+                  </div>
+          </div>
+        </form>
         </div>
+        <!-- Advanced Search -->
         <div class="advanced-search">
           <br>
-          <center><a href="https://www.w3schools.com/html/" target="_blank">Advanced Search</a></center>
+          <center><a href="#advancedsearchModal" data-toggle="modal"><font color="black">Advanced Search</font></a></center>
         </div>
+
+        <!--Advanced Search  Form-->
+        <form method="get" action="advance.php" id="advancedsearchform">
+          <div class="modal" id="advancedsearchModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button class="close" data-dismiss="modal">
+                      &times;
+                    </button>
+                    <h4 id="myModalLabel">
+                      Search your books by :
+                    </h4>
+                </div>
+                <div class="modal-body">
+
+                    <!--Advanced Search message from PHP file-->
+                    <div id="signupmessage"></div>
+
+                    <div class="form-group">
+                        <label for="title" class="sr-only">Title:</label>
+                        <input class="form-control" type="text" name="title" id="title" placeholder="Title" maxlength="300">
+                    </div>
+                    <div class="form-group">
+                        <label for="author" class="sr-only">Author:</label>
+                        <input class="form-control" type="text" name="author" id="author" placeholder="Author" maxlength="50q0">
+                    </div>
+                    <div class="form-group">
+                        <label for="isbn" class="sr-only">ISBN:</label>
+                        <input class="form-control" type="text" name="isbn" id="isbn" placeholder="ISBN" maxlength="30">
+                    </div>
+                    <div class="form-group">
+                        <label for="average_rating" class="sr-only">Rating</label>
+                        <input class="form-control" type="text" name="average_rating" id="average_rating" placeholder="Rating" maxlength="30">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input class="btn green" name="search" type="submit" value="Search">
+                </div>
+            </div>
+        </div>
+        </div>
+        </form>
 
         <!--Footer-->
         <div class="footer">

@@ -1,39 +1,42 @@
 <?php
 header('Access-Control-Allow-Headers: *');
 require_once 'init.php';
-if(isset($_GET['q'])) {
-	$q = strip_tags($_GET['q']);
+if(isset($_GET['book_id'])) {
+	$data = $_GET['book_id'];
+	// $user =$_SESSION['email'];
 
-	$from =0;
-	$size = 10;
 	$query = $es->search([
-		'index' => 'book',
-		'from' => 0,
-		'size'=> 1000,
+			'index'=> 'book',
 		'type' => '_doc',
 		'body' => [
-		    'query' => [
-			        'multi_match' => ['query' => $q,
-							       'fields' => ['title', 'authors']]
-		    ]
-			]
-	]);
-	// $total_hits = $query['hits']['total'];
-	// $total_pages = ceil($total_hits/$size);
-	// $from = ($size*($_GET['page']-1));
+			 'query' => [
+								'match'  => ['_id' => $data],
+
+			 ]
+
+		]
+
+ ]);
+ if($query['hits']['total'] >= 1){
+		$results = $query ['hits']['hits'];
+
+		foreach($results as $r) {
+
+			 $authors=$r['_source']['authors'];
+			 $average_rating=$r['_source']['average_rating'];
+			 $title=$r['_source']['title'];
+			 $isbn=$r['_source']['isbn'];
+			 $isbn13=$r['_source']['isbn13'];
+			 $language_code=$r['_source']['language_code'];
+			 $ratings_count=$r['_source']['ratings_count'];
+			 $text_reviews_count=$r['_source']['text_reviews_count'];
 
 
-	if($query['hits']['total'] >=1 ) {
-		$results = $query['hits']['hits'];
+
+		}
 	}
-	$total=$query['hits']['total']['value'];
-}
 
-function highlightWords($text,$word) {
-	$text = preg_replace('#'. preg_quote($word) .'#i', '<span style="background-color: #F9F902;">\\0</span>', $text);
-	return $text;
 }
-
 
 ?>
 <!DOCTYPE html>
@@ -69,7 +72,7 @@ function highlightWords($text,$word) {
 
 </head>
 <!-- Pagination -->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
   $(document).ready(function(){
     var options={
       valueNames:['title','authors'],
@@ -78,7 +81,7 @@ function highlightWords($text,$word) {
     }
     var listObj = new List('listId',options);
   });
-</script>
+</script> -->
 
 <body>
 <!-- Navigation bar -->
@@ -107,88 +110,63 @@ function highlightWords($text,$word) {
 </nav>
 
 <br>
-<div class="row vertical-center-row">
-    <div class="col-lg-4 col-lg-offset-4">
-        <div class="input-group">
-					  <br><br><br><br><br><br>
-            <center><h1>Expand</h1><p></center>
-
-        </div>
-    </div>
-</div>
-
 <br>
 <br>
-<form action="display.php" method="get" autocomplete="on">
-<div class="row">
-    <div class="col-lg-4 col-lg-offset-4">
-        <div class="input-group">
-          <input type="text" name="q" class="search-query form-control" value="<?php echo $q; ?>" placeholder= "<?php echo $q ?>">
-          <span class="input-group-btn">
-              <button class="btn btn-danger" type="submit" value="search">
-                  <span class=" glyphicon glyphicon-search"></span>
-              </button>
-          </span>
-        </div>
-    </div>
-
-</div>
-</form>
 <br>
 
 <br>
- <div class="container">
-    <div class="row" style="text-align: center">
-    <h2> Search Results: </h2>
-    </div>
-  </div>
-
 
 	<div id="listId">
 		<ul class="list">
-			<?php echo $total ?>
-
-			<?php
-			for ($i=0; $i < $total; $i++) {
-				?>
 				<div class="row" style="text-align: center">
 					<div class="container">
 						<div class="panel panel-success">
 												<div class=panel-heading>
 													<h2 class=panel-title>
-														<a href="<?php
-														$output=('http://localhost/Web-Programming/singlebook.php?book_id='.$results[$i]['_id']);
-														// $output=('https://www.goodreads.com/book/auto_complete?format=json&q='.$results[$i]['_source']['isbn13']);
-														// $output = ('https://www.google.com/search?q='.$r['_source']['title']);
-														echo($output);
-													?>"
-													ONCLICK=search_book('<?php echo $output; ?>') target="_blank"><p><br>
-															<?php $title1= !empty($q)?highlightWords($results[$i]['_source']['title'],$q):$results[$i]['_source']['title'];
-															echo $title1;?>
-														</a>
+														<b>Title:</b><p>
+																<?php
+										echo $title; ?><p></p>
 												</div>
-													<br><br>
+
 														<b>Authors:</b><p>
-																<?php $authors= !empty($q)?highlightWords($results[$i]['_source']['authors'],$q):$results[$i]['_source']['authors'];
-																echo $authors; ?><p></p><br>
+																<?php
+										echo $authors; ?><p></p><br>
 														<b>Average Rating:</b><p>
-																<?php echo $results[$i]['_source']['average_rating']; ?><p></p><br>
+																<?php echo $average_rating; ?><p></p><br>
 														<b>DocId:</b>
 															<center>
-																	<?php echo $results[$i]['_id']; ?>
+																	<?php echo $data; ?>
 															</center>
 														<br>
-														<!-- <input class="btn green save" method="POST" id=<?php echo $results[$i]['_id']; ?> name="Save" type="submit" value="Save"> -->
-													<!-- <button type="button" class="btn btn-default" data-dismiss="modal"> -->
+														<b>Isbn:</b>
+															<center>
+																	<?php echo $isbn; ?>
+															</center>
+														<br>
+														<b>Isbn13:</b>
+															<center>
+																	<?php echo $isbn13; ?>
+															</center>
+														<br>
+														<b>Language Code:</b>
+															<center>
+																	<?php echo $language_code; ?>
+															</center>
+														<br>
+														<b>Ratings count:</b>
+															<center>
+																	<?php echo $ratings_count; ?>
+															</center>
+														<br>
+														<b>Text Reviews count:</b>
+															<center>
+																	<?php echo $text_reviews_count; ?>
+															</center>
+														<br>
 										</div>
 									</div>
 								</div>
-							<?php
-						}
-							 ?>
-
 		</ul>
-		<center><ul class="pagination"></ul></center>
 	</div>
 	<br><br>
 				<!--Footer-->

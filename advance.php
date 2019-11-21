@@ -19,6 +19,11 @@ require_once 'init.php';
 	if($query['hits']['total'] >=1 ) {
 		$results = $query['hits']['hits'];
 	}
+
+  function highlightWords($text,$word) {
+  	$text = preg_replace('#'. preg_quote($word) .'#i', '<span style="background-color: #F9F902;">\\0</span>', $text);
+  	return $text;
+  }
 ?>
 
 <!DOCTYPE html>

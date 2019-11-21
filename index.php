@@ -1,4 +1,6 @@
 <?php
+
+header('Access-Control-Allow-Headers: *');
 session_start();
 // include('connection.php');
 
@@ -13,15 +15,13 @@ require_once 'init.php';
 //Title search
 if(isset($_GET['q'])) {
 
-	$q =htmlspecialchars($_GET['q']);
+	$q =trim(strip_tags($_GET['q']));
 	$query = $es->search([
 		'body' => [
 		    'query' => [
 		        'bool' => [
 			    'should' => [
 			        'match' => ['title' => $q]
-              //'match' => ['isbn' => $q]
-				//'match' => ['text' => $q]
 		        ]
 		    ]
                 ]
@@ -31,6 +31,7 @@ if(isset($_GET['q'])) {
 		$results = $query['hits']['hits'];
 	}
 }
+
 
 ?>
 <!DOCTYPE html>
@@ -43,7 +44,7 @@ if(isset($_GET['q'])) {
     <link href="css/bootstrap.min.css" rel="stylesheet">
       <link href="styling.css" rel="stylesheet">
       <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Arvo" />
-
+		<script src='https://www.google.com/recaptcha/api.js'></script>
   </head>
   <body>
       <!--Navigation Bar-->
@@ -100,15 +101,11 @@ if(isset($_GET['q'])) {
         </form>
         </div>
 
+        <!-- Advanced Search -->
         <div class="advanced-search">
           <br>
           <center><a href="#advancedsearchModal" data-toggle="modal"><font color="black">Advanced Search</font></a></center>
         </div>
-
-				<!-- <div class="advanced-search">
-          <br>
-          <center><a href="add.php">Add Books</a></center>
-        </div>-->
 
 
         <!--Login Form-->
@@ -157,6 +154,8 @@ if(isset($_GET['q'])) {
                   <button type="button" class="btn btn-default pull-left" data-dismiss="modal" data-target="signupModal" data-toggle="modal">
                     Register
                   </button>
+									<!-- ReCaptcha implementation -->
+									<div class="g-recaptcha" data-sitekey="6LcrAMIUAAAAAC07CUDRIHIgqKoiq-nfnP_c5CL-"></div>
                 </div>
             </div>
         </div>
@@ -197,16 +196,21 @@ if(isset($_GET['q'])) {
                         <label for="password2" class="sr-only">Confirm password</label>
                         <input class="form-control" type="password" name="password2" id="password2" placeholder="Confirm password" maxlength="30">
                     </div>
+
                 </div>
                 <div class="modal-footer">
                     <input class="btn green" name="signup" type="submit" value="Sign up">
                   <button type="button" class="btn btn-default" data-dismiss="modal">
                     Cancel
                   </button>
+									<!-- ReCaptcha implementation -->
+									<div class="g-recaptcha" data-sitekey="6LcrAMIUAAAAAC07CUDRIHIgqKoiq-nfnP_c5CL-"></div>
+									<!-- <script src='https://www.google.com/recaptcha/api.js'></script> -->
                 </div>
             </div>
         </div>
         </div>
+
         </form>
 
         <!--Advanced Search  Form-->
@@ -243,10 +247,6 @@ if(isset($_GET['q'])) {
                         <label for="average_rating" class="sr-only">Rating</label>
                         <input class="form-control" type="text" name="average_rating" id="average_rating" placeholder="Rating" maxlength="30">
                     </div>
-                    <!--<div class="form-group">
-                        <label for="password2" class="sr-only">Confirm password</label>
-                        <input class="form-control" type="password" name="password2" id="password2" placeholder="Subject" maxlength="30">
-                    </div>-->
                 </div>
                 <div class="modal-footer">
                     <input class="btn green" name="search" type="submit" value="Search">
@@ -271,11 +271,8 @@ if(isset($_GET['q'])) {
                     </h4>
                 </div>
                 <div class="modal-body">
-
                     <!--forgot password message from PHP file-->
                     <div id="forgotpasswordmessage"></div>
-
-
                     <div class="form-group">
                         <label for="forgotemail" class="sr-only">Email:</label>
                         <input class="form-control" type="email" name="forgotemail" id="forgotemail" placeholder="Email" maxlength="50">

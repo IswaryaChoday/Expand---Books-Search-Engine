@@ -6,12 +6,13 @@ include('connection.php');
 //<!--Check user inputs-->
 //    <!--Define error messages-->
 $missingUsername = '<p><strong>Please enter a username!</strong></p>';
- $missingEmail = '<p><strong>Please enter your email address!</strong></p>';
+$missingEmail = '<p><strong>Please enter your email address!</strong></p>';
 $invalidEmail = '<p><strong>Please enter a valid email address!</strong></p>';
 $missingPassword = '<p><strong>Please enter a Password!</strong></p>';
 $invalidPassword = '<p><strong>Your password should be at least 6 characters long and inlcude one capital letter and one number!</strong></p>';
 $differentPassword = '<p><strong>Passwords don\'t match!</strong></p>';
 $missingPassword2 = '<p><strong>Please confirm your password</strong></p>';
+$captchaerrormsg='<p><strong>Please check the reCAPTCHA</strong></p>';
 $errors='';
 //Get username
 if(empty($_POST["username"])){
@@ -19,6 +20,14 @@ if(empty($_POST["username"])){
 }else{
     $username = filter_var($_POST["username"], FILTER_SANITIZE_STRING);
 }
+
+//Get Captcha
+if(empty($_POST['g-recaptcha-response'])){
+  $errors .= $captchaerrormsg;
+}else{
+    $responseKey = $_POST['g-recaptcha-response'];
+}
+
 //Get email
 if(empty($_POST["email"])){
     $errors .= $missingEmail;
@@ -54,8 +63,27 @@ if($errors){
     echo $resultMessage;
     exit;
 }
-//no errors
+// ReCaptcha
+if(isset($_POST['g-recaptcha-response'])) {
 
+  $responseKey = $_POST['g-recaptcha-response'];
+
+  if(!$responseKey){
+    $errors .= $captchaerrormsg;
+  }
+
+	$secretKey = "6LcrAMIUAAAAAPD0A-T2P53yd4txgJ2na95r2zor";
+	$userIP = $_SERVER['REMOTE_ADDR'];
+
+	$url = "https://www.google.com/recaptcha/api/siteverify?secret=".$secretKey."&response=".$responseKey."&remoteIP=".$userIP;
+	$response = file_get_contents($url);
+	$response = json_decode($response,true);
+
+  if(intval($response["success"]) !== 1) {
+   // echo '<h2>Error using captcha</h2>';
+
+  } else {
+//no errors
 //Prepare variables for the queries
 $username = mysqli_real_escape_string($link, $username);
 $email = mysqli_real_escape_string($link, $email);
@@ -88,17 +116,8 @@ if($results){
     echo '<div class="alert alert-danger">That email is already registered. Do you want to log in?</div>';  exit;
 }
 
-
 //Create a unique  activation code
 $activationKey = bin2hex(openssl_random_pseudo_bytes(16));
-    //byte: unit of data = 8 bits
-    //bit: 0 or 1
-    //16 bytes = 16*8 = 128 bits
-    //(2*2*2*2)*2*2*2*2*...*2
-    //16*16*...*16
-    //32 characters
-
-//Insert user details and activation code in the users table
 
 $sql = "INSERT INTO users (`username`, `email`, `password`, `activation`) VALUES ('$username', '$email', '$password', '$activationKey')";
 $result = mysqli_query($link, $sql);
@@ -106,11 +125,12 @@ if(!$result){
     echo '<div class="alert alert-danger">There was an error inserting the users details in the database!</div>';
     exit;
 }
-
 //Send the user an email with a link to activate.php with their email and activation code
 $message = "Please click on this link to activate your account:\n\n";
 $message .= "http://localhost/Web-Programming//activate.php?email=" . urlencode($email) . "&key=$activationKey";
 if(mail($email, 'Confirm your Registration', $message, 'From:'.'ishwarya.bolla96@gmail.com')){
        echo "<div class='alert alert-success'>Thank for your registring! A confirmation email has been sent to $email. Please click on the activation link to activate your account.</div>";
+}
+}
 }
 ?>

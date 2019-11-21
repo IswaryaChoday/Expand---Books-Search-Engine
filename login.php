@@ -7,6 +7,8 @@ include("connection.php");
     //Define error messages
 $missingEmail = '<p><stong>Please enter your email address!</strong></p>';
 $missingPassword = '<p><stong>Please enter your password!</strong></p>';
+$captchaerrormsg='<p><strong>Please check the reCAPTCHA</strong></p>';
+$errors='';
     //Get email and password
     //Store errors in errors variable
 if(empty($_POST["loginemail"])){
@@ -14,18 +16,45 @@ if(empty($_POST["loginemail"])){
 }else{
     $email = filter_var($_POST["loginemail"], FILTER_SANITIZE_EMAIL);
 }
+//Get Captcha
+if(empty($_POST['g-recaptcha-response'])){
+  $errors .= $captchaerrormsg;
+}else{
+    $responseKey = $_POST['g-recaptcha-response'];
+}
 if(empty($_POST["loginpassword"])){
     $errors .= $missingPassword;
 }else{
     $password = filter_var($_POST["loginpassword"], FILTER_SANITIZE_STRING);
 }
-    //If there are any errors
-    $errors='';
+
 if($errors){
     //print error message
     $resultMessage = '<div class="alert alert-danger">' . $errors .'</div>';
     echo $resultMessage;
-}else{
+    exit;
+}
+// ReCaptcha
+if(isset($_POST['g-recaptcha-response'])) {
+
+  $responseKey = $_POST['g-recaptcha-response'];
+
+  if(!$responseKey){
+    $errors .= $captchaerrormsg;
+  }
+
+	$secretKey = "6LcrAMIUAAAAAPD0A-T2P53yd4txgJ2na95r2zor";
+	$userIP = $_SERVER['REMOTE_ADDR'];
+
+	$url = "https://www.google.com/recaptcha/api/siteverify?secret=".$secretKey."&response=".$responseKey."&remoteIP=".$userIP;
+	$response = file_get_contents($url);
+	$response = json_decode($response,true);
+
+  if(intval($response["success"]) !== 1) {
+   // echo '<h2>Error using captcha</h2>';
+
+  }
+else{
     //else: No errors
     //Prepare variables for the query
     $email = mysqli_real_escape_string($link, $email);
@@ -92,13 +121,5 @@ else {
     }
 }
     }
-
-            //else
-                //Create two variables $authentificator1 and $authentificator2
-                //Store them in a cookie
-                //Run query to store them in rememberme table
-                //If query unsuccessful
-                    //print error
-                //else
-                    //print "success"
+  }
 ?>

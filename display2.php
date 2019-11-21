@@ -1,44 +1,67 @@
 <?php
+header('Access-Control-Allow-Headers: *');
 require_once 'init.php';
 
-if(isset($_GET['i'])) {
+session_start();
+if(!isset($_SESSION['user_id'])){
+    header("location: index.php");
+}
 
-	$i = htmlspecialchars($_GET['i']);
+if(isset($_GET['q'])) {
+	$q = strip_tags($_GET['q']);
+
+	$from =0;
+	$size = 10;
 	$query = $es->search([
+		'index' => 'book',
+		'from' => 0,
+		'size'=> 1000,
+		'type' => '_doc',
 		'body' => [
 		    'query' => [
-		        'bool' => [
-			    'should' => [
-			        'match' => ['title' => $i]
-				      ///'match' => ['isbn' => $q]
-		        ]
+			        'multi_match' => ['query' => $q,
+							       'fields' => ['title', 'authors']]
 		    ]
-                ]
-	    ]
+			]
 	]);
+	// $total_hits = $query['hits']['total'];
+	// $total_pages = ceil($total_hits/$size);
+	// $from = ($size*($_GET['page']-1));
+
 
 	if($query['hits']['total'] >=1 ) {
 		$results = $query['hits']['hits'];
 	}
+	$total=$query['hits']['total']['value'];
 }
+
+function highlightWords($text,$word) {
+	$text = preg_replace('#'. preg_quote($word) .'#i', '<span style="background-color: #F9F902;">\\0</span>', $text);
+	return $text;
+}
+
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta charset="utf-8">
-  <title>Search | Document Search</title>
+  <title>Search | Online Books Search</title>
   <meta name="description" content="search-results">
-  <meta name="author" content="Ruan Bekker">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link href="//fonts.googleapis.com/css?family=Pattaya|Slabo+27px|Raleway:400,300,600" rel="stylesheet" type="text/css">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link rel="icon" type="image/png" href="images/favico.png">
-
-  <script src="js/bootstrap.min.js"></script>
-  <script src="js/jquery.min.js"></script>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="styling.css" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Arvo" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+		<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/1.5.0/list.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="index.js"></script>
+		<script type="text/javascript" src="result.js"></script>
 
   <style>
       h1 {
@@ -48,53 +71,55 @@ if(isset($_GET['i'])) {
         position: relative;
         right: -130px;
       }
-
-      /*h3 {
-        font-family: 'Pattaya', sans-serif;
-        font-size: 20px;
-        position: relative;
-        right: -90px;
-      }*/
-
-      h4 {
-        font-family: Arvo, serif;
-        font-size: 30px;
-      }
   </style>
 
 </head>
+<!-- Pagination -->
+<script type="text/javascript">
+  $(document).ready(function(){
+    var options={
+      valueNames:['title','authors'],
+      page:10,
+      pagination: true
+    }
+    var listObj = new List('listId',options);
+  });
+</script>
+
 <body>
-
-
-
-<nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
-  <div class="container-fluid">
-         <div class="navbar-header">
-           <a href="http://localhost/Web-Programming/mainpageloggedin.php" class="navbar-brand">Search Engine</a>
-           <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
-               <span style="color:blue" class="sr-only">Toggle navigation</span>
-               <span class="icon-bar"></span>
-               <span class="icon-bar"></span>
-               <span class="icon-bar"></span>
-           </button>
-          </div>
-               <div class="navbar-collapse collapse"id="navbarCollapse">
-               <ul class="nav navbar-nav">
-                 <li class="active"><a href="mainpageloggedin.php">Home</a></li>
-                 <li><a href="#">Help</a></li>
-                 <li><a href="#">Contact us</a></li>
-               </ul>
-               <ul class="nav navbar-nav navbar-right">
-                 <li><a href="#loginModal" data-toggle="modal">Login</a></li>
-               </ul>
-              </div>
-  </div>
-</nav>
+	<!--Navigation Bar-->
+	<nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
+		<div class="container-fluid">
+					 <div class="navbar-header">
+						 <a href="mainpageloggedin.php" class="navbar-brand">Search Engine</a>
+						 <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
+								 <span style="color:blue" class="sr-only">Toggle navigation</span>
+								 <span class="icon-bar"></span>
+								 <span class="icon-bar"></span>
+								 <span class="icon-bar"></span>
+						 </button>
+						</div>
+								 <div class="navbar-collapse collapse"id="navbarCollapse">
+								 <ul class="nav navbar-nav">
+									 <li><a href="profile.php">Profile</a></li>
+									 <!-- <li><a href="#">Help</a></li> -->
+									 <li><a href="add.php">Add Books</a></li>
+									 <li><a href="favourite.php">Favourites</a></li>
+									 <li class="active"><a href="#">Home</a></li>
+								 </ul>
+								 <ul class="nav navbar-nav navbar-right">
+										 <li><a href="#">Logged in as <b><?php echo $_SESSION['username']?></b></a></li>
+									 <li><a href="index.php?logout=1">Log out</a></li>
+								 </ul>
+								</div>
+		</div>
+	</nav>
 
 <br>
 <div class="row vertical-center-row">
     <div class="col-lg-4 col-lg-offset-4">
         <div class="input-group">
+					  <br><br><br><br><br><br>
             <center><h1>Expand</h1><p></center>
 
         </div>
@@ -104,12 +129,10 @@ if(isset($_GET['i'])) {
 <br>
 <br>
 <form action="display2.php" method="get" autocomplete="on">
-	<?php
-	if(isset($results)) {?>
 <div class="row">
     <div class="col-lg-4 col-lg-offset-4">
         <div class="input-group">
-          <input type="text" name="i" class="search-query form-control" placeholder="Search more">
+          <input type="text" name="q" class="search-query form-control" value="<?php echo $q; ?>" placeholder= "<?php echo $q ?>">
           <span class="input-group-btn">
               <button class="btn btn-danger" type="submit" value="search">
                   <span class=" glyphicon glyphicon-search"></span>
@@ -117,6 +140,7 @@ if(isset($_GET['i'])) {
           </span>
         </div>
     </div>
+
 </div>
 </form>
 <br>
@@ -129,35 +153,67 @@ if(isset($_GET['i'])) {
   </div>
 
 
+	<div id="listId">
+		<ul class="list">
+			<?php echo $total ?>
 
-					<?php
-            foreach($results as $r) {
-            ?>
+			<?php
+			for ($i=0; $i < $total; $i++) {
+				?>
+				<div class="row" style="text-align: center">
+					<div class="container">
+						<div class="panel panel-success">
+												<div class=panel-heading>
+													<h2 class=panel-title>
+														<a href="<?php
+														$output=('http://localhost/Web-Programming/singlebook.php?book_id='.$results[$i]['_id']);
+														// $output = ('https://www.google.com/search?q='.$r['_source']['title']);
+														echo($output);
+													?>" ONCLICK=search_book('<?php echo $output; ?>') target="_blank"><p><br>
+															<?php $title1= !empty($q)?highlightWords($results[$i]['_source']['title'],$q):$results[$i]['_source']['title'];
+															echo $title1;?>
+														</a>
+												</div>
+													<br><br>
+														<b>Authors:</b><p>
+																<?php $authors= !empty($q)?highlightWords($results[$i]['_source']['authors'],$q):$results[$i]['_source']['authors'];
+																echo $authors; ?><p></p><br>
+														<b>Average Rating:</b><p>
+																<?php echo $results[$i]['_source']['average_rating']; ?><p></p><br>
+														<b>DocId:</b>
+															<center>
+																	<?php echo $results[$i]['_id']; ?>
+															</center>
+														<br>
+														<input class="btn green save" method="POST" id=<?php echo $results[$i]['_id']; ?> name="Save" type="submit" value="Save">
+													<!-- <button type="button" class="btn btn-default" data-dismiss="modal"> -->
+										</div>
+									</div>
+								</div>
+							<?php
+						}
+							 ?>
 
-                <div class="row" style="text-align: center">
-   		  <div class="container">
-  		    <div class="panel panel-success">
-                      <div class=panel-heading>
-                        <h2 class=panel-title>
-                          <a href="<?php echo $r['_source']['title']; ?>" target="_blank"><p><br>
-                            <?php echo $r['_source']['title']; ?>
-                          </a>
-                      </div>
-                        <br><br>
-                          <b>Content:</b><p>
-                              <?php echo $r['_source']['title']; ?><p></p><br>
-                      <div class="">
-                          <b>DocId:</b>
-                            <center>
-                                <?php echo $r['_id']; ?>
-                            </center>
-                          <br>
-                    </div>
-                  </div>
-                </div>
-            <?php
-            }
-        }
-        ?>
-</body>
-</html>
+		</ul>
+		<center><ul class="pagination"></ul></center>
+	</div>
+	<br><br>
+				<!--Footer-->
+				<div class="footer">
+						<div class="container">
+								<p>expand.com Copyright &copy;<?php $today = date("Y"); echo $today?>.</p>
+						</div>
+				</div>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+			<script>
+			  function search_book(event) {
+			  // console.log(event);
+			  // var xmlHttp = new XMLHttpRequest();
+			  // xmlHttp.open( "GET", event, false ); // false for synchronous request
+			  // xmlHttp.send( null );
+			  // alert (xmlHttp.responseText);
+
+			  }
+			  </script>
+			  </body>
+			  </html>
