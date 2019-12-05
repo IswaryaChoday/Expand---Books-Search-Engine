@@ -72,7 +72,7 @@ window.location="http://localhost/Web-Programming/index.php";
                        <li class="active"><a href="mainpageloggedin.php">Home</a></li>
 											 <!-- <li><a href="add.php">Add Books</a></li> -->
                        <!-- <li><a href="#">Help</a></li> -->
-                       <li><a href="#">Contact us</a></li>
+                       <!-- <li><a href="#">Contact us</a></li> -->
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
                        <li><a href="#loginModal" data-toggle="modal">Login</a></li>

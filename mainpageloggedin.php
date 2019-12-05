@@ -191,35 +191,41 @@ function startRecording(){
                         <label for="average_rating" class="sr-only">Rating</label>
                         <input class="form-control" type="text" name="average_rating" id="average_rating" placeholder="Rating" maxlength="30">
                     </div>
-                    <!-- speech  -->
-                    <div class="form-group">
-                        <label for="q" class="sr-only">Search by Speech</label>
-                        <input class="form-control" type="text" name="q" id="speechText" placeholder="Search by Speech" maxlength="30">
-                    </div>
-                    <!-- original speech  -->
-                    <div class="search-container">
-                    <form action="display2.php" method="get" autocomplete="on">
-                      <div class='wrap'>
-                      <!-- Search box-->
-                      <div class="search">
-                      <!-- <input type='text' class='searchTerm' id='speechText' name='q'> -->
-                      <!-- <input class="searchTerm" type="text" name="q" id="speechText" placeholder="Search by Speech" maxlength="30"> -->
-                      <center>
-                      <input type='button' id='start' value='Start Recording' onclick='startRecording();'>
-                      <button type="submit" class="searchButton"> Go
-                            <i class="fa fa-search" placeholder="Search by Speech"></i>
-                         </button> &nbsp;
-                    </center>
-                    </div>
-                    </div>
-                    <!-- Search Result -->
-                    <div class="container"></div>
-                    </form>
-                    </div>
-                </div>
-                <div class="modal-footer">
+
                     <center><input class="btn green" name="search" type="submit" value="Search"></center>
+                    <center><h4>(or)</h4></center>
+
+
+
+                <!-- <div class="modal-footer">
+                    <center><input class="btn green" name="search" type="submit" value="Search"></center>
+                </div> -->
+                <!-- speech  -->
+                <div class="form-group">
+                    <label for="q" class="sr-only">Audio</label>
+                    <input class="form-control" type="text" name="q" id="speechText" placeholder="Audio" maxlength="30">
                 </div>
+                <!-- original speech  -->
+                <div class="search-container">
+                <form action="display2.php" method="get" autocomplete="on">
+                  <div class='wrap'>
+                  <!-- Search box-->
+                  <div class="search">
+                  <!-- <input type='text' class='searchTerm' id='speechText' name='q'> -->
+                  <!-- <input class="searchTerm" type="text" name="q" id="speechText" placeholder="Search by Speech" maxlength="30"> -->
+                  <center>
+                  <input class="btn green" type='button' id='start' value='Start Recording' onclick='startRecording();'>
+                  <button type="submit" class="btn green"> Go
+                        <i class="fa fa-search" placeholder="Audio"></i>
+                     </button> &nbsp;
+                </center>
+                </div>
+                </div>
+                <!-- Search Result -->
+                <div class="container"></div>
+                </form>
+                </div>
+              </div>
             </div>
         </div>
         </div>

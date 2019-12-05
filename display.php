@@ -18,11 +18,6 @@ if(isset($_GET['q'])) {
 		    ]
 			]
 	]);
-	// $total_hits = $query['hits']['total'];
-	// $total_pages = ceil($total_hits/$size);
-	// $from = ($size*($_GET['page']-1));
-
-
 	if($query['hits']['total'] >=1 ) {
 		$results = $query['hits']['hits'];
 	}
@@ -96,9 +91,6 @@ function highlightWords($text,$word) {
 								 <div class="navbar-collapse collapse"id="navbarCollapse">
 								 <ul class="nav navbar-nav">
 									 <li class="active"><a href="mainpageloggedin.php">Home</a></li>
-									 <!-- <li><a href="add.php">Add Books</a></li> -->
-									 <!-- <li><a href="#">Help</a></li> -->
-									 <li><a href="#">Contact us</a></li>
 								 </ul>
 								 <ul class="nav navbar-nav navbar-right">
 									 <li><a href="#loginModal" data-toggle="modal">Login</a></li>
@@ -107,7 +99,6 @@ function highlightWords($text,$word) {
 								</div>
 		</div>
 	</nav>
-
 	<!--Sign up Form-->
 	<form method="post" id="signupform">
 		<div class="modal" id="signupModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
