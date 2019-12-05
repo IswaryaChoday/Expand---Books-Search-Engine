@@ -1,4 +1,8 @@
 <?php
+session_start();
+require('connection.php');
+
+$user_id=$_SESSION['email'];
 header('Access-Control-Allow-Headers: *');
 require_once 'init.php';
 if(isset($_GET['book_id'])) {
@@ -30,14 +34,9 @@ if(isset($_GET['book_id'])) {
 			 $language_code=$r['_source']['language_code'];
 			 $ratings_count=$r['_source']['ratings_count'];
 			 $text_reviews_count=$r['_source']['text_reviews_count'];
-
-
-
 		}
 	}
-
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,24 +70,43 @@ if(isset($_GET['book_id'])) {
   </style>
 
 </head>
-<!-- Pagination -->
-<!-- <script type="text/javascript">
-  $(document).ready(function(){
-    var options={
-      valueNames:['title','authors'],
-      page:10,
-      pagination: true
-    }
-    var listObj = new List('listId',options);
-  });
-</script> -->
-
 <body>
 <!-- Navigation bar -->
-<nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
+<?php
+if(!isset($_SESSION['user_id'])){
+ ?>
+ <nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
+	 <div class="container-fluid">
+					<div class="navbar-header">
+						<a href="http://localhost/Web-Programming/mainpageloggedin.php" class="navbar-brand">Expand</a>
+						<button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
+								<span style="color:blue" class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+						</button>
+					 </div>
+								<div class="navbar-collapse collapse"id="navbarCollapse">
+								<ul class="nav navbar-nav">
+									<li class="active"><a href="mainpageloggedin.php">Home</a></li>
+									<!-- <li><a href="add.php">Add Books</a></li> -->
+									<!-- <li><a href="#">Help</a></li> -->
+									<li><a href="#">Contact us</a></li>
+								</ul>
+								<!-- <ul class="nav navbar-nav navbar-right">
+									<li><a href="#loginModal" data-toggle="modal">Login</a></li>
+									<li><a href="#signupModal" data-toggle="modal">Sign up-It's free</a></li>
+								</ul> -->
+							 </div>
+	 </div>
+ </nav>
+<?php
+} else {
+	?>
+	 <nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
   <div class="container-fluid">
          <div class="navbar-header">
-           <a href="http://localhost/Web-Programming/mainpageloggedin.php" class="navbar-brand">Expand</a>
+           <a href="mainpageloggedin.php" class="navbar-brand">Expand</a>
            <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
                <span style="color:blue" class="sr-only">Toggle navigation</span>
                <span class="icon-bar"></span>
@@ -98,24 +116,28 @@ if(isset($_GET['book_id'])) {
           </div>
                <div class="navbar-collapse collapse"id="navbarCollapse">
                <ul class="nav navbar-nav">
-                 <li class="active"><a href="mainpageloggedin.php">Home</a></li>
+                 <li><a href="profile.php">Profile</a></li>
+                 <!-- <li><a href="#">Help</a></li> -->
                  <li><a href="add.php">Add Books</a></li>
-                 <li><a href="#">Contact us</a></li>
+                 <li class="active"><a href=#>Favorites</a></li>
+                 <li><a href="mainpageloggedin.php">Home</a></li>
                </ul>
                <ul class="nav navbar-nav navbar-right">
-                 <li><a href="#loginModal" data-toggle="modal">Login</a></li>
+                   <li><a href="#">Logged in as <b><?php echo $_SESSION['username']?></b></a></li>
+                 <li><a href="index.php?logout=1">Log out</a></li>
                </ul>
               </div>
   </div>
 </nav>
+ <?php
+}
+?>
 
 <br>
 <br>
 <br>
 <br>
-
 <br>
-
 	<div id="listId">
 		<ul class="list">
 				<div class="row" style="text-align: center">

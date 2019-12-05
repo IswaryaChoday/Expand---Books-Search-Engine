@@ -1,7 +1,10 @@
 <?php
 
 require_once 'init.php';
-
+session_start();
+if(!isset($_SESSION['user_id'])){
+    header("location: index.php");
+}
 if (!empty($_POST)) {
 	if(isset($_POST['title'], $_POST['authors'], $_POST['isbn'])) {
 
@@ -45,30 +48,33 @@ if (!empty($_POST)) {
   </style>
   </head>
   <body>
-      <!-- Navigation bar  -->
-      <nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
-        <div class="container-fluid">
-               <div class="navbar-header">
-                 <a href="http://localhost/Web-Programming/mainpageloggedin.php" class="navbar-brand">Expand</a>
-                 <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
-                     <span style="color:blue" class="sr-only">Toggle navigation</span>
-                     <span class="icon-bar"></span>
-                     <span class="icon-bar"></span>
-                     <span class="icon-bar"></span>
-                 </button>
-                </div>
-                     <div class="navbar-collapse collapse"id="navbarCollapse">
-                     <ul class="nav navbar-nav">
-                       <li><a href="mainpageloggedin.php">Home</a></li>
-											 <li class="active"><a href="add.php">Add Books</a></li>
-                       <li><a href="#">Contact us</a></li>
-                     </ul>
-                     <ul class="nav navbar-nav navbar-right">
-                       <li><a href="#loginModal" data-toggle="modal">Login</a></li>
-                     </ul>
-                    </div>
-        </div>
-      </nav>
+		<!--Navigation Bar-->
+		<nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
+			<div class="container-fluid">
+						 <div class="navbar-header">
+							 <a href="mainpageloggedin.php" class="navbar-brand">Expand</a>
+							 <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
+									 <span style="color:blue" class="sr-only">Toggle navigation</span>
+									 <span class="icon-bar"></span>
+									 <span class="icon-bar"></span>
+									 <span class="icon-bar"></span>
+							 </button>
+							</div>
+									 <div class="navbar-collapse collapse"id="navbarCollapse">
+									 <ul class="nav navbar-nav">
+										 <li><a href="profile.php">Profile</a></li>
+										 <!-- <li><a href="#">Help</a></li> -->
+										 <li class="active"><a href="add.php">Add Books</a></li>
+										 <li><a href="favourite.php">Favorites</a></li>
+										 <li><a href="mainpageloggedin.php">Home</a></li>
+									 </ul>
+									 <ul class="nav navbar-nav navbar-right">
+											 <li><a href="#">Logged in as <b><?php echo $_SESSION['username']?></b></a></li>
+										 <li><a href="index.php?logout=1">Log out</a></li>
+									 </ul>
+									</div>
+			</div>
+		</nav>
 			<!-- Body of the add -->
 <div class="row vertical-center-row">
     <div class="col-lg-4 col-lg-offset-4">

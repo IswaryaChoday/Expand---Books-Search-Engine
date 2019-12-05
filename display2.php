@@ -91,7 +91,7 @@ function highlightWords($text,$word) {
 	<nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
 		<div class="container-fluid">
 					 <div class="navbar-header">
-						 <a href="mainpageloggedin.php" class="navbar-brand">Search Engine</a>
+						 <a href="mainpageloggedin.php" class="navbar-brand">Expand</a>
 						 <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
 								 <span style="color:blue" class="sr-only">Toggle navigation</span>
 								 <span class="icon-bar"></span>
@@ -104,7 +104,7 @@ function highlightWords($text,$word) {
 									 <li><a href="profile.php">Profile</a></li>
 									 <!-- <li><a href="#">Help</a></li> -->
 									 <li><a href="add.php">Add Books</a></li>
-									 <li><a href="favourite.php">Favourites</a></li>
+									 <li><a href="favourite.php">Favorites</a></li>
 									 <li class="active"><a href="#">Home</a></li>
 								 </ul>
 								 <ul class="nav navbar-nav navbar-right">
@@ -121,7 +121,6 @@ function highlightWords($text,$word) {
         <div class="input-group">
 					  <br><br><br><br><br><br>
             <center><h1>Expand</h1><p></center>
-
         </div>
     </div>
 </div>
@@ -149,6 +148,8 @@ function highlightWords($text,$word) {
  <div class="container">
     <div class="row" style="text-align: center">
     <h2> Search Results: </h2>
+		<?php
+		echo "Number of results found :".$total; ?>
     </div>
   </div>
 
@@ -205,15 +206,6 @@ function highlightWords($text,$word) {
 						</div>
 				</div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-			<script>
-			  function search_book(event) {
-			  // console.log(event);
-			  // var xmlHttp = new XMLHttpRequest();
-			  // xmlHttp.open( "GET", event, false ); // false for synchronous request
-			  // xmlHttp.send( null );
-			  // alert (xmlHttp.responseText);
 
-			  }
-			  </script>
 			  </body>
 			  </html>

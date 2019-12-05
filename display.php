@@ -34,7 +34,6 @@ function highlightWords($text,$word) {
 	return $text;
 }
 
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -46,6 +45,7 @@ function highlightWords($text,$word) {
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 		<link href="styling.css" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Arvo" />
+		<script src='https://www.google.com/recaptcha/api.js'></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -81,31 +81,135 @@ function highlightWords($text,$word) {
 </script>
 
 <body>
-<!-- Navigation bar -->
-<nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
-  <div class="container-fluid">
-         <div class="navbar-header">
-           <a href="http://localhost/Web-Programming/mainpageloggedin.php" class="navbar-brand">Expand</a>
-           <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
-               <span style="color:blue" class="sr-only">Toggle navigation</span>
-               <span class="icon-bar"></span>
-               <span class="icon-bar"></span>
-               <span class="icon-bar"></span>
-           </button>
-          </div>
-               <div class="navbar-collapse collapse"id="navbarCollapse">
-               <ul class="nav navbar-nav">
-                 <li class="active"><a href="mainpageloggedin.php">Home</a></li>
-                 <li><a href="add.php">Add Books</a></li>
-                 <li><a href="#">Contact us</a></li>
-               </ul>
-               <ul class="nav navbar-nav navbar-right">
-                 <li><a href="#loginModal" data-toggle="modal">Login</a></li>
-               </ul>
-              </div>
-  </div>
-</nav>
+	<!--Navigation Bar-->
+	<nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
+		<div class="container-fluid">
+					 <div class="navbar-header">
+						 <a href="http://localhost/Web-Programming/mainpageloggedin.php" class="navbar-brand">Expand</a>
+						 <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
+								 <span style="color:blue" class="sr-only">Toggle navigation</span>
+								 <span class="icon-bar"></span>
+								 <span class="icon-bar"></span>
+								 <span class="icon-bar"></span>
+						 </button>
+						</div>
+								 <div class="navbar-collapse collapse"id="navbarCollapse">
+								 <ul class="nav navbar-nav">
+									 <li class="active"><a href="mainpageloggedin.php">Home</a></li>
+									 <!-- <li><a href="add.php">Add Books</a></li> -->
+									 <!-- <li><a href="#">Help</a></li> -->
+									 <li><a href="#">Contact us</a></li>
+								 </ul>
+								 <ul class="nav navbar-nav navbar-right">
+									 <li><a href="#loginModal" data-toggle="modal">Login</a></li>
+									 <li><a href="#signupModal" data-toggle="modal">Sign up-It's free</a></li>
+								 </ul>
+								</div>
+		</div>
+	</nav>
 
+	<!--Sign up Form-->
+	<form method="post" id="signupform">
+		<div class="modal" id="signupModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button class="close" data-dismiss="modal">
+								&times;
+							</button>
+							<h4 id="myModalLabel">
+								Sign up today and Discover our Amazing Books!
+							</h4>
+					</div>
+					<div class="modal-body">
+
+							<!--Sign up message from PHP file-->
+							<div id="signupmessage"></div>
+
+							<div class="form-group">
+									<label for="username" class="sr-only">Username:</label>
+									<input class="form-control" type="text" name="username" id="username" placeholder="Username" maxlength="30">
+							</div>
+							<div class="form-group">
+									<label for="email" class="sr-only">Email:</label>
+									<input class="form-control" type="email" name="email" id="email" placeholder="Email Address" maxlength="50">
+							</div>
+							<div class="form-group">
+									<label for="password" class="sr-only">Choose a password:</label>
+									<input class="form-control" type="password" name="password" id="password" placeholder="Choose a password" maxlength="30">
+							</div>
+							<div class="form-group">
+									<label for="password2" class="sr-only">Confirm password</label>
+									<input class="form-control" type="password" name="password2" id="password2" placeholder="Confirm password" maxlength="30">
+							</div>
+
+					</div>
+					<div class="modal-footer">
+
+						<!-- ReCaptcha implementation -->
+						<center><div class="g-recaptcha" data-sitekey="6LcrAMIUAAAAAC07CUDRIHIgqKoiq-nfnP_c5CL-"></div></center>
+						<br>
+						<center><input class="btn green" name="signup" type="submit" value="Sign up">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						Cancel
+					</button></center>
+						<!-- <script src='https://www.google.com/recaptcha/api.js'></script> -->
+					</div>
+			</div>
+	</div>
+	</div>
+
+	</form>
+	<!--Login Form-->
+	<form method="post" id="loginform">
+		<div class="modal" id="loginModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button class="close" data-dismiss="modal">
+								&times;
+							</button>
+							<h4 id="myModalLabel">
+								Login:
+							</h4>
+					</div>
+					<div class="modal-body">
+
+							<!--Login message from PHP file-->
+							<div id="loginmessage"></div>
+
+
+							<div class="form-group">
+									<label for="loginemail" class="sr-only">Email:</label>
+									<input class="form-control" type="email" name="loginemail" id="loginemail" placeholder="Email" maxlength="50">
+							</div>
+							<div class="form-group">
+									<label for="loginpassword" class="sr-only">Password</label>
+									<input class="form-control" type="password" name="loginpassword" id="loginpassword" placeholder="Password" maxlength="30">
+							</div>
+							<div class="checkbox">
+									<label>
+											<input type="checkbox" name="rememberme" id="rememberme">
+										Remember me
+									</label>
+											<a class="pull-right" style="cursor: pointer" data-dismiss="modal" data-target="#forgotpasswordModal" data-toggle="modal">
+									<font color ="green">Forgot Password?</font>
+									</a>
+							</div>
+
+					</div>
+					<div class="modal-footer">
+						<center><div class="g-recaptcha" data-sitekey="6LcrAMIUAAAAAC07CUDRIHIgqKoiq-nfnP_c5CL-"></div></center>
+						<br>
+						<center><input class="btn green" name="login" type="submit" value="Login">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						Cancel
+					</button><center>
+					</div>
+			</div>
+	</div>
+	</div>
+	</form>
 <br>
 <div class="row vertical-center-row">
     <div class="col-lg-4 col-lg-offset-4">
@@ -140,6 +244,8 @@ function highlightWords($text,$word) {
  <div class="container">
     <div class="row" style="text-align: center">
     <h2> Search Results: </h2>
+		<?php
+		echo "Number of results found :".$total; ?>
     </div>
   </div>
 
@@ -178,7 +284,8 @@ function highlightWords($text,$word) {
 																	<?php echo $results[$i]['_id']; ?>
 															</center>
 														<br>
-														<!-- <input class="btn green save" method="POST" id=<?php echo $results[$i]['_id']; ?> name="Save" type="submit" value="Save"> -->
+
+														<!-- <input class="btn green saved" method="POST" id=<?php echo $results[$i]['_id']; ?> name="saved" type="submit" value="Save"> -->
 													<!-- <button type="button" class="btn btn-default" data-dismiss="modal"> -->
 										</div>
 									</div>
@@ -198,15 +305,7 @@ function highlightWords($text,$word) {
 						</div>
 				</div>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-			<script>
-			  function search_book(event) {
-			  // console.log(event);
-			  // var xmlHttp = new XMLHttpRequest();
-			  // xmlHttp.open( "GET", event, false ); // false for synchronous request
-			  // xmlHttp.send( null );
-			  // alert (xmlHttp.responseText);
-
-			  }
-			  </script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="index.js"></script>
 			  </body>
 			  </html>

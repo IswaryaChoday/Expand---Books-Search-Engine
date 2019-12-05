@@ -1,6 +1,6 @@
 $(document).on('click','.save', function(e){
 
-  alert("Saved");
+  alert(" Saved");
     var id = e.currentTarget.id;
     $.ajax({
         async:false,

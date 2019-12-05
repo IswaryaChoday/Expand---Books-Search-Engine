@@ -2,21 +2,17 @@
                session_start();
                require('connection.php');
               $user_id=$_SESSION['email'];
-
                 $userLoginQuery = "SELECT * FROM `savedbooks` WHERE `user_id`= '$user_id' ";
-
                $result = $link->query($userLoginQuery);
               if ($result->num_rows > 0) {
-
                 while($row = $result->fetch_assoc()){
-
-
                   $title = $row['title'];
+                  $bookId = $row['id'];
+
                ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
   <meta charset="utf-8">
   <title>Search | Online Books Search</title>
   <meta name="description" content="search-results">
@@ -34,8 +30,7 @@
 		<script type="text/javascript" src="js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="index.js"></script>
 		<script type="text/javascript" src="result.js"></script>
-
-
+    <script type="text/javascript" src="remove.js"></script>
       <style>
           h1 {
             font-family: Arvo, serif;
@@ -44,18 +39,17 @@
             position: relative;
             right: -130px;
           }
-
           .blue{
               background-color: #479bc7;
           }
       </style>
-
 </head>
+<!--Navigation Bar-->
 <!--Navigation Bar-->
 <nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
   <div class="container-fluid">
          <div class="navbar-header">
-           <a href="mainpageloggedin.php" class="navbar-brand">Search Engine</a>
+           <a href="mainpageloggedin.php" class="navbar-brand">Expand</a>
            <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
                <span style="color:blue" class="sr-only">Toggle navigation</span>
                <span class="icon-bar"></span>
@@ -66,9 +60,10 @@
                <div class="navbar-collapse collapse"id="navbarCollapse">
                <ul class="nav navbar-nav">
                  <li><a href="profile.php">Profile</a></li>
-                 <li><a href="#">Help</a></li>
-                 <li><a href="favourite.php">Favourites</a></li>
-                 <li class="active"><a href="#">My Books</a></li>
+                 <!-- <li><a href="#">Help</a></li> -->
+                 <li><a href="add.php">Add Books</a></li>
+                 <li class="active"><a href=#>Favorites</a></li>
+                 <li><a href="mainpageloggedin.php">Home</a></li>
                </ul>
                <ul class="nav navbar-nav navbar-right">
                    <li><a href="#">Logged in as <b><?php echo $_SESSION['username']?></b></a></li>
@@ -84,11 +79,9 @@
         <div class="input-group">
 					  <br><br><br><br><br><br>
             <center><h1>Expand</h1><p></center>
-
         </div>
     </div>
 </div>
-
 <div class="container">
    <div class="row" style="text-align: center">
    <h2> My Favourites: </h2>
@@ -106,7 +99,12 @@
           <div class="panel panel-success">
                       <div class="panel-heading">
                         <h2 class="panel-title">
-                          <a href="#" target="_blank"></a><p><a href="#" target="_blank"><br>
+                          <a href="#" target="_blank"></a><p>
+                            <a href=<?php
+														$output=('http://localhost/Web-Programming/singlebook.php?book_id='.$bookId);
+														// $output = ('https://www.google.com/search?q='.$r['_source']['title']);
+														echo($output);
+													?> target="_blank"><br>
                             <?php echo $title;?></a>
                       </p></h2></div>
                         <br><br>
@@ -115,8 +113,9 @@
 
                               <b>Average Rating</b><p>
                               <?php echo $row['average_rating'];?></p><p></p><br>
+                              <input class="btn green remove" id="<?php echo $row['id']; ?>" name="Delete" type="submit" value="Delete">
                 <?php }}?>
-                <a class="btn blue" href="mainpageloggedin.php">Back</a>
-            </div>
+                <!-- <a class="btn blue" href="mainpageloggedin.php">Back</a> -->
+          </div>
         </div>
     </div>

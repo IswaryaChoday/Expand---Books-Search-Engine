@@ -1,4 +1,4 @@
-<?php
+  <?php
 session_start();
 if(!isset($_SESSION['user_id'])){
     header("location: index.php");
@@ -46,12 +46,33 @@ if(!isset($_SESSION['user_id'])){
         }
       </style>
   </head>
+  <script>
+var recognition = new webkitSpeechRecognition();
+recognition.onresult = function(event) {
+  var saidText = "";
+  for (var i = event.resultIndex; i < event.results.length; i++) {
+    if (event.results[i].isFinal) {
+      saidText = event.results[i][0].transcript;
+    } else {
+      saidText += event.results[i][0].transcript;
+    }
+  }
+  // Update Textbox value
+  document.getElementById('speechText').value = saidText;
+
+  // Search Posts
+  searchPosts(saidText);
+}
+function startRecording(){
+  recognition.start();
+}
+</script>
   <body>
       <!--Navigation Bar-->
       <nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
         <div class="container-fluid">
                <div class="navbar-header">
-                 <a href="mainpageloggedin.php" class="navbar-brand">Search Engine</a>
+                 <a href="mainpageloggedin.php" class="navbar-brand">Expand</a>
                  <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
                      <span style="color:blue" class="sr-only">Toggle navigation</span>
                      <span class="icon-bar"></span>
@@ -64,13 +85,15 @@ if(!isset($_SESSION['user_id'])){
                        <li><a href="profile.php">Profile</a></li>
                        <!-- <li><a href="#">Help</a></li> -->
                        <li><a href="add.php">Add Books</a></li>
-                       <li><a href="favourite.php">Favourites</a></li>
+                       <li><a href="favourite.php">Favorites</a></li>
                        <li class="active"><a href="#">Home</a></li>
                      </ul>
                      <ul class="nav navbar-nav navbar-right">
                          <li><a href="#">Logged in as <b><?php echo $_SESSION['username']?></b></a></li>
                        <li><a href="index.php?logout=1">Log out</a></li>
+
                      </ul>
+
                     </div>
         </div>
       </nav>
@@ -109,7 +132,7 @@ if(!isset($_SESSION['user_id'])){
         <!-- Search form -->
         <br><br><br>
         <div class="search-container">
-          <form action="display2.php" method="get" autocomplete="off">
+           <form action="display2.php" method="get" autocomplete="off">
           <div class="row">
                    <div id="custom-search-input">
                                     <div class="input-group col-md-12">
@@ -120,10 +143,14 @@ if(!isset($_SESSION['user_id'])){
                                             </button>
                                         </span>
                                     </div>
+
                   </div>
           </div>
         </form>
-        </div>
+
+</div>
+
+
         <!-- Advanced Search -->
         <div class="advanced-search">
           <br>
@@ -164,9 +191,34 @@ if(!isset($_SESSION['user_id'])){
                         <label for="average_rating" class="sr-only">Rating</label>
                         <input class="form-control" type="text" name="average_rating" id="average_rating" placeholder="Rating" maxlength="30">
                     </div>
+                    <!-- speech  -->
+                    <div class="form-group">
+                        <label for="q" class="sr-only">Search by Speech</label>
+                        <input class="form-control" type="text" name="q" id="speechText" placeholder="Search by Speech" maxlength="30">
+                    </div>
+                    <!-- original speech  -->
+                    <div class="search-container">
+                    <form action="display2.php" method="get" autocomplete="on">
+                      <div class='wrap'>
+                      <!-- Search box-->
+                      <div class="search">
+                      <!-- <input type='text' class='searchTerm' id='speechText' name='q'> -->
+                      <!-- <input class="searchTerm" type="text" name="q" id="speechText" placeholder="Search by Speech" maxlength="30"> -->
+                      <center>
+                      <input type='button' id='start' value='Start Recording' onclick='startRecording();'>
+                      <button type="submit" class="searchButton"> Go
+                            <i class="fa fa-search" placeholder="Search by Speech"></i>
+                         </button> &nbsp;
+                    </center>
+                    </div>
+                    </div>
+                    <!-- Search Result -->
+                    <div class="container"></div>
+                    </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <input class="btn green" name="search" type="submit" value="Search">
+                    <center><input class="btn green" name="search" type="submit" value="Search"></center>
                 </div>
             </div>
         </div>

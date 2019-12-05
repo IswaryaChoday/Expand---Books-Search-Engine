@@ -45,6 +45,14 @@ if(isset($_GET['q'])) {
       <link href="styling.css" rel="stylesheet">
       <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Arvo" />
 		<script src='https://www.google.com/recaptcha/api.js'></script>
+
+		<script type="text/javascript">
+function AlertIt() {
+var answer = confirm ("Please login to use the advanced search feature.")
+if (answer)
+window.location="http://localhost/Web-Programming/index.php";
+}
+</script>
   </head>
   <body>
       <!--Navigation Bar-->
@@ -62,8 +70,7 @@ if(isset($_GET['q'])) {
                      <div class="navbar-collapse collapse"id="navbarCollapse">
                      <ul class="nav navbar-nav">
                        <li class="active"><a href="mainpageloggedin.php">Home</a></li>
-
-											 <li><a href="add.php">Add Books</a></li>
+											 <!-- <li><a href="add.php">Add Books</a></li> -->
                        <!-- <li><a href="#">Help</a></li> -->
                        <li><a href="#">Contact us</a></li>
                      </ul>
@@ -104,7 +111,7 @@ if(isset($_GET['q'])) {
         <!-- Advanced Search -->
         <div class="advanced-search">
           <br>
-          <center><a href="#advancedsearchModal" data-toggle="modal"><font color="black">Advanced Search</font></a></center>
+          <center><a href="javascript:AlertIt();" data-toggle="modal"><font color="black">Advanced Search</font></a></center>
         </div>
 
 
@@ -147,15 +154,12 @@ if(isset($_GET['q'])) {
 
                 </div>
                 <div class="modal-footer">
-                    <input class="btn green" name="login" type="submit" value="Login">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">
-                    Cancel
-                  </button>
-                  <button type="button" class="btn btn-default pull-left" data-dismiss="modal" data-target="signupModal" data-toggle="modal">
-                    Register
-                  </button>
-									<!-- ReCaptcha implementation -->
-									<div class="g-recaptcha" data-sitekey="6LcrAMIUAAAAAC07CUDRIHIgqKoiq-nfnP_c5CL-"></div>
+									<center><div class="g-recaptcha" data-sitekey="6LcrAMIUAAAAAC07CUDRIHIgqKoiq-nfnP_c5CL-"></div></center>
+									<br>
+									<center><input class="btn green" name="login" type="submit" value="Login">
+								<button type="button" class="btn btn-default" data-dismiss="modal">
+									Cancel
+								</button><center>
                 </div>
             </div>
         </div>
@@ -199,12 +203,14 @@ if(isset($_GET['q'])) {
 
                 </div>
                 <div class="modal-footer">
-                    <input class="btn green" name="signup" type="submit" value="Sign up">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">
-                    Cancel
-                  </button>
+
 									<!-- ReCaptcha implementation -->
-									<div class="g-recaptcha" data-sitekey="6LcrAMIUAAAAAC07CUDRIHIgqKoiq-nfnP_c5CL-"></div>
+									<center><div class="g-recaptcha" data-sitekey="6LcrAMIUAAAAAC07CUDRIHIgqKoiq-nfnP_c5CL-"></div></center>
+									<br>
+									<center><input class="btn green" name="signup" type="submit" value="Sign up">
+								<button type="button" class="btn btn-default" data-dismiss="modal">
+									Cancel
+								</button></center>
 									<!-- <script src='https://www.google.com/recaptcha/api.js'></script> -->
                 </div>
             </div>
@@ -214,7 +220,7 @@ if(isset($_GET['q'])) {
         </form>
 
         <!--Advanced Search  Form-->
-        <form method="get" action="advance.php" id="advancedsearchform">
+        <!-- <form method="get" action="advance.php" id="advancedsearchform">
           <div class="modal" id="advancedsearchModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -228,7 +234,7 @@ if(isset($_GET['q'])) {
                 </div>
                 <div class="modal-body">
 
-                    <!--Advanced Search message from PHP file-->
+
                     <div id="signupmessage"></div>
 
                     <div class="form-group">
@@ -254,7 +260,7 @@ if(isset($_GET['q'])) {
             </div>
         </div>
         </div>
-        </form>
+        </form> -->
 
 
         <!--Forgot Password? Form-->
