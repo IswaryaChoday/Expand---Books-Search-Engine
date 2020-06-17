@@ -1,4 +1,4 @@
-## DATA:
+## Data:
 
 I’ve downloaded my dataset from a subsidiary called Kaggle. My dataset books.json contains various fields related to books like book ID, title, authors, average_rating, ISBN, ISBN13, language_code, num_pages, ratings_count, text_reviews_count. 
 
@@ -46,7 +46,7 @@ The content of the SERP can be found in the display.php file. The SERP contains 
 
 In order for the SERP to display the actual term (after sanitization) on top, I’ve used the trim() and strip_tags() function and it goes like this : $q =trim(strip_tags($_GET['q'])); where q is my result. The code can be found in display.php and display2.php.
 
-## Insert a new entry:
+### Insert a new entry:
 
 The users can add a new book to the database only if they login. The content of this can be found in the add.php file. There’s an alert that says if the books have been successfully indexed. The users can add a book title, author’s name and the book’s ISBN number to the elasticsearch. 
 
