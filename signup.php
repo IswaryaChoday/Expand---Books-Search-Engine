@@ -127,7 +127,7 @@ if(!$result){
 }
 //Send the user an email with a link to activate.php with their email and activation code
 $message = "Please click on this link to activate your account:\n\n";
-$message .= "http://localhost/Web-Programming//activate.php?email=" . urlencode($email) . "&key=$activationKey";
+$message .= "http://52.73.241.4/Expand-Books-Search-Engine//activate.php?email=" . urlencode($email) . "&key=$activationKey";
 if(mail($email, 'Confirm your Registration', $message, 'From:'.'ishwarya.bolla96@gmail.com')){
        echo "<div class='alert alert-success'>Thank for your registring! A confirmation email has been sent to $email. Please click on the activation link to activate your account.</div>";
 }

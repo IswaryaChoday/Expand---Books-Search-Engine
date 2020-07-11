@@ -80,7 +80,7 @@ function highlightWords($text,$word) {
 	<nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
 		<div class="container-fluid">
 					 <div class="navbar-header">
-						 <a href="http://localhost/Web-Programming/mainpageloggedin.php" class="navbar-brand">Expand</a>
+						 <a href="http://52.73.241.4/Expand-Books-Search-Engine/mainpageloggedin.php" class="navbar-brand">Expand</a>
 						 <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
 								 <span style="color:blue" class="sr-only">Toggle navigation</span>
 								 <span class="icon-bar"></span>
@@ -254,7 +254,7 @@ function highlightWords($text,$word) {
 												<div class=panel-heading>
 													<h2 class=panel-title>
 														<a href="<?php
-														$output=('http://localhost/Web-Programming/singlebook.php?book_id='.$results[$i]['_id']);
+														$output=('http://52.73.241.4/Expand-Books-Search-Engine/singlebook.php?book_id='.$results[$i]['_id']);
 														// $output=('https://www.goodreads.com/book/auto_complete?format=json&q='.$results[$i]['_source']['isbn13']);
 														// $output = ('https://www.google.com/search?q='.$r['_source']['title']);
 														echo($output);

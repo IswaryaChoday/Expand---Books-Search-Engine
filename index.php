@@ -51,7 +51,7 @@ if(isset($_GET['q'])) {
 function AlertIt() {
 var answer = confirm ("Please login to use the advanced search feature.")
 if (answer)
-window.location="http://localhost/Web-Programming/index.php";
+window.location="http://52.73.241.4/Expand-Books-Search-Engine/index.php";
 }
 </script>
   </head>
@@ -60,7 +60,7 @@ window.location="http://localhost/Web-Programming/index.php";
       <nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
         <div class="container-fluid">
                <div class="navbar-header">
-                 <a href="http://localhost/Web-Programming/mainpageloggedin.php" class="navbar-brand">Expand</a>
+                 <a href="http://52.73.241.4/Expand-Books-Search-Engine/index.php" class="navbar-brand">Expand</a>
                  <button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
                      <span style="color:blue" class="sr-only">Toggle navigation</span>
                      <span class="icon-bar"></span>
