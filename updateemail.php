@@ -40,7 +40,7 @@ if(!$result){
 }else{
     //send email with link to activatenewemail.php with current email, new email and activation code
     $message = "Please click on this link to prove that you own this email:\n\n";
-$message .= "http://localhost/Web-Programming/activatenewemail.php?email=" . urlencode($email) . "&newemail=" . urlencode($newemail) . "&key=$activationKey";
+$message .= "http://52.73.241.4/Expand-Books-Search-Engine/activatenewemail.php?email=" . urlencode($email) . "&newemail=" . urlencode($newemail) . "&key=$activationKey";
 if(mail($newemail, 'Email Update for you Online Books App', $message, 'From:'.'ishwarya.bolla96@gmail.com')){
        echo "<div class='alert alert-success'>An email has been sent to $newemail. Please click on the link to prove you own that email address.</div>";
 }

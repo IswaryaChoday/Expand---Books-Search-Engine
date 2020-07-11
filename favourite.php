@@ -101,7 +101,7 @@
                         <h2 class="panel-title">
                           <a href="#" target="_blank"></a><p>
                             <a href=<?php
-														$output=('http://localhost/Web-Programming/singlebook.php?book_id='.$bookId);
+														$output=('http://52.73.241.4/Expand-Books-Search-Engine/singlebook.php?book_id='.$bookId);
 														// $output = ('https://www.google.com/search?q='.$r['_source']['title']);
 														echo($output);
 													?> target="_blank"><br>

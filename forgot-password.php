@@ -62,7 +62,7 @@ if(!$result){
 //Send email with link to resetpassword.php with user id and activation code
 
 $message = "Please click on this link to reset your password:\n\n";
-$message .= "http://localhost/Web-Programming/resetpassword.php?user_id=$user_id&key=$key";
+$message .= "http://52.73.241.4/Expand-Books-Search-Engine/resetpassword.php?user_id=$user_id&key=$key";
 if(mail($email, 'Reset Your Password', $message, 'From:'.'ishwarya.bolla96@gmail.com')){
        echo "<div class='alert alert-success'>An email has been sent to $email. Please click on the link to reset your password.</div>";
 }

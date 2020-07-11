@@ -78,7 +78,7 @@ if(!isset($_SESSION['user_id'])){
  <nav role="navigation" class="navbar navbar-custom navbar-fixed-top">
 	 <div class="container-fluid">
 					<div class="navbar-header">
-						<a href="http://localhost/Web-Programming/mainpageloggedin.php" class="navbar-brand">Expand</a>
+						<a href="http://52.73.241.4/Expand-Books-Search-Engine/mainpageloggedin.php" class="navbar-brand">Expand</a>
 						<button type="button" class="navbar-toggle" data-target="#navbarCollapse" data-toggle="collapse">
 								<span style="color:blue" class="sr-only">Toggle navigation</span>
 								<span class="icon-bar"></span>
