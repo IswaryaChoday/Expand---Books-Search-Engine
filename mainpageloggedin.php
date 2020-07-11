@@ -63,6 +63,11 @@ recognition.onresult = function(event) {
   // Search Posts
   searchPosts(saidText);
 }
+
+recognition.onerror = function(event) {
+    console.log(event.error);
+};
+
 function startRecording(){
   recognition.start();
 }
