@@ -1,98 +1,95 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints;
 
+use Elasticsearch\Common\Exceptions\RuntimeException;
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
- * Class Deletebyquery
+ * Class DeleteByQuery
+ * Elasticsearch API name delete_by_query
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class DeleteByQuery extends AbstractEndpoint
 {
-    /**
-     * @param array $body
-     *
-     * @throws \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     * @return $this
-     */
-    public function setBody($body)
+
+    public function getURI(): string
+    {
+        if (isset($this->index) !== true) {
+            throw new RuntimeException(
+                'index is required for delete_by_query'
+            );
+        }
+        $index = $this->index;
+        $type = $this->type ?? null;
+        if (isset($type)) {
+            @trigger_error('Specifying types in urls has been deprecated', E_USER_DEPRECATED);
+        }
+
+        if (isset($type)) {
+            return "/$index/$type/_delete_by_query";
+        }
+        return "/$index/_delete_by_query";
+    }
+
+    public function getParamWhitelist(): array
+    {
+        return [
+            'analyzer',
+            'analyze_wildcard',
+            'default_operator',
+            'df',
+            'from',
+            'ignore_unavailable',
+            'allow_no_indices',
+            'conflicts',
+            'expand_wildcards',
+            'lenient',
+            'preference',
+            'q',
+            'routing',
+            'scroll',
+            'search_type',
+            'search_timeout',
+            'size',
+            'max_docs',
+            'sort',
+            '_source',
+            '_source_excludes',
+            '_source_includes',
+            'terminate_after',
+            'stats',
+            'version',
+            'request_cache',
+            'refresh',
+            'timeout',
+            'wait_for_active_shards',
+            'scroll_size',
+            'wait_for_completion',
+            'requests_per_second',
+            'slices'
+        ];
+    }
+
+    public function getMethod(): string
+    {
+        return 'POST';
+    }
+
+    public function setBody($body): DeleteByQuery
     {
         if (isset($body) !== true) {
             return $this;
         }
-
-
         $this->body = $body;
+
         return $this;
-    }
-
-
-
-    /**
-     * @throws \Elasticsearch\Common\Exceptions\RuntimeException
-     * @return string
-     */
-    protected function getURI()
-    {
-        if (isset($this->index) !== true) {
-            throw new Exceptions\RuntimeException(
-                'index is required for Deletebyquery'
-            );
-        }
-        $index = $this->index;
-        $type = $this->type;
-        $uri   = "/$index/_query";
-
-        if (isset($index) === true && isset($type) === true) {
-            $uri = "/$index/$type/_query";
-        } elseif (isset($index) === true) {
-            $uri = "/$index/_query";
-        }
-
-        return $uri;
-    }
-
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
-            'analyzer',
-            'consistency',
-            'default_operator',
-            'df',
-            'ignore_unavailable',
-            'allow_no_indices',
-            'expand_wildcards',
-            'replication',
-            'q',
-            'routing',
-            'source',
-            'timeout',
-        );
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
-    {
-        return 'DELETE';
     }
 }

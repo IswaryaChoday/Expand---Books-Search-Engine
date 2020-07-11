@@ -1,60 +1,47 @@
 <?php
-/**
- * User: zach
- * Date: 01/12/2015
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Cat;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Segments
+ * Elasticsearch API name cat.segments
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Cat
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Cat
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Segments extends AbstractEndpoint
 {
-    /**
-     * @return string
-     */
-    protected function getURI()
+
+    public function getURI(): string
     {
-        $index = $this->index;
-        $uri   = "/_cat/segments";
+        $index = $this->index ?? null;
 
-        if (isset($index) === true) {
-            $uri = "/_cat/segments/$index";
+        if (isset($index)) {
+            return "/_cat/segments/$index";
         }
-
-        return $uri;
+        return "/_cat/segments";
     }
 
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
+    public function getParamWhitelist(): array
     {
-        return array(
+        return [
+            'format',
+            'bytes',
             'h',
             'help',
-            'v',
-        );
+            's',
+            'v'
+        ];
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
+    public function getMethod(): string
     {
         return 'GET';
     }

@@ -1,85 +1,53 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Indices;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Analyze
+ * Elasticsearch API name indices.analyze
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Indices
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Analyze extends AbstractEndpoint
 {
-    /**
-     * @param array $body
-     *
-     * @throws \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     * @return $this
-     */
-    public function setBody($body)
+
+    public function getURI(): string
+    {
+        $index = $this->index ?? null;
+
+        if (isset($index)) {
+            return "/$index/_analyze";
+        }
+        return "/_analyze";
+    }
+
+    public function getParamWhitelist(): array
+    {
+        return [
+            'index'
+        ];
+    }
+
+    public function getMethod(): string
+    {
+        return isset($this->body) ? 'POST' : 'GET';
+    }
+
+    public function setBody($body): Analyze
     {
         if (isset($body) !== true) {
             return $this;
         }
-
-
         $this->body = $body;
+
         return $this;
-    }
-
-
-
-    /**
-     * @return string
-     */
-    protected function getURI()
-    {
-        $index = $this->index;
-        $uri   = "/_analyze";
-
-        if (isset($index) === true) {
-            $uri = "/$index/_analyze";
-        }
-
-        return $uri;
-    }
-
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
-            'analyzer',
-            'field',
-            'filters',
-            'index',
-            'prefer_local',
-            'text',
-            'tokenizer',
-            'format',
-        );
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
-    {
-        return 'GET';
     }
 }

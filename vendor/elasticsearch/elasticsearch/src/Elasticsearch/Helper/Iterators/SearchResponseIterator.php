@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Elasticsearch\Helper\Iterators;
 
-use ElasticSearch\Client;
+use Elasticsearch\Client;
 use Iterator;
 
 /**
@@ -12,10 +14,11 @@ use Iterator;
  * @package  Elasticsearch\Helper\Iterators
  * @author   Arturo Mejia <arturo.mejia@kreatetechnology.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  * @see      Iterator
  */
-class SearchResponseIterator implements Iterator {
+class SearchResponseIterator implements Iterator
+{
 
     /**
      * @var Client
@@ -30,7 +33,7 @@ class SearchResponseIterator implements Iterator {
     /**
      * @var int
      */
-    private $current_key;
+    private $current_key = 0;
 
     /**
      * @var array
@@ -43,7 +46,7 @@ class SearchResponseIterator implements Iterator {
     private $scroll_id;
 
     /**
-     * @var duration
+     * @var string duration
      */
     private $scroll_ttl;
 
@@ -51,7 +54,7 @@ class SearchResponseIterator implements Iterator {
      * Constructor
      *
      * @param Client $client
-     * @param array  $params  Associative array of parameters
+     * @param array  $search_params Associative array of parameters
      * @see   Client::search()
      */
     public function __construct(Client $client, array $search_params)
@@ -67,7 +70,8 @@ class SearchResponseIterator implements Iterator {
     /**
      * Destructor
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->clearScroll();
     }
 
@@ -77,7 +81,7 @@ class SearchResponseIterator implements Iterator {
      * @param  string $time_to_live
      * @return $this
      */
-    public function setScrollTimeout($time_to_live)
+    public function setScrollTimeout(string $time_to_live): SearchResponseIterator
     {
         $this->scroll_ttl = $time_to_live;
         return $this;
@@ -88,12 +92,15 @@ class SearchResponseIterator implements Iterator {
      *
      * @return void
      */
-    private function clearScroll()
+    private function clearScroll(): void
     {
         if (!empty($this->scroll_id)) {
             $this->client->clearScroll(
                 array(
-                    'scroll_id' => $this->scroll_id
+                    'scroll_id' => $this->scroll_id,
+                    'client' => array(
+                        'ignore' => 404
+                    )
                 )
             );
             $this->scroll_id = null;
@@ -103,13 +110,10 @@ class SearchResponseIterator implements Iterator {
     /**
      * Rewinds the iterator by performing the initial search.
      *
-     * The "search_type" parameter will determine if the first "page" contains
-     * hits or if the first page contains just a "scroll_id"
-     *
      * @return void
      * @see    Iterator::rewind()
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->clearScroll();
         $this->current_key = 0;
@@ -123,29 +127,27 @@ class SearchResponseIterator implements Iterator {
      * @return void
      * @see    Iterator::next()
      */
-    public function next()
+    public function next(): void
     {
-        $this->current_key++;
         $this->current_scrolled_response = $this->client->scroll(
-            array(
-                'scroll_id' => $this->scroll_id,
-                'scroll'    => $this->scroll_ttl
-            )
+            [
+            'scroll_id' => $this->scroll_id,
+            'scroll'    => $this->scroll_ttl
+            ]
         );
         $this->scroll_id = $this->current_scrolled_response['_scroll_id'];
+        $this->current_key++;
     }
 
     /**
      * Returns a boolean value indicating if the current page is valid or not
-     * based on the number of hits in the page considering that the first page
-     * might not include any hits
      *
      * @return bool
      * @see    Iterator::valid()
      */
-    public function valid()
+    public function valid(): bool
     {
-        return ($this->current_key === 0) || isset($this->current_scrolled_response['hits']['hits'][0]);
+        return isset($this->current_scrolled_response['hits']['hits'][0]);
     }
 
     /**
@@ -154,7 +156,7 @@ class SearchResponseIterator implements Iterator {
      * @return array
      * @see    Iterator::current()
      */
-    public function current()
+    public function current(): array
     {
         return $this->current_scrolled_response;
     }
@@ -165,7 +167,7 @@ class SearchResponseIterator implements Iterator {
      * @return int
      * @see    Iterator::key()
      */
-    public function key()
+    public function key(): int
     {
         return $this->current_key;
     }

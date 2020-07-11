@@ -1,82 +1,63 @@
 <?php
-/**
- * User: zach
- * Date: 5/12/14
- * Time: 10:40 AM
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Cat;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Fielddata
+ * Elasticsearch API name cat.fielddata
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Cat
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Cat
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Fielddata extends AbstractEndpoint
 {
-    private $fields;
+    protected $fields;
 
+    public function getURI(): string
+    {
+        $fields = $this->fields ?? null;
 
-    /**
-     * @param $fields
-     *
-     * @return $this
-     */
-    public function setFields($fields)
+        if (isset($fields)) {
+            return "/_cat/fielddata/$fields";
+        }
+        return "/_cat/fielddata";
+    }
+
+    public function getParamWhitelist(): array
+    {
+        return [
+            'format',
+            'bytes',
+            'h',
+            'help',
+            's',
+            'v',
+            'fields'
+        ];
+    }
+
+    public function getMethod(): string
+    {
+        return 'GET';
+    }
+
+    public function setFields($fields): Fielddata
     {
         if (isset($fields) !== true) {
             return $this;
         }
-
-        $this->fields = $fields;
-        return $this;
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getURI()
-    {
-        $fields = $this->fields;
-        $uri   = "/_cat/fielddata";
-
-        if (isset($fields) === true) {
-            $uri = "/_cat/fielddata/$fields";
+        if (is_array($fields) === true) {
+            $fields = implode(",", $fields);
         }
+        $this->fields = $fields;
 
-        return $uri;
-    }
-
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
-            'local',
-            'master_timeout',
-            'h',
-            'help',
-            'v',
-        );
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
-    {
-        return 'GET';
+        return $this;
     }
 }

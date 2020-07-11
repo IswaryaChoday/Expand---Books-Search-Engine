@@ -1,89 +1,72 @@
 <?php
-/**
- * User: zach
- * Date: 3/24/14
- * Time: 5:09 PM
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints;
 
-use Elasticsearch\Common\Exceptions\InvalidArgumentException;
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class SearchTemplate
+ * Elasticsearch API name search_template
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class SearchTemplate extends AbstractEndpoint
 {
-    /**
-     * @param array $body
-     *
-     * @throws \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     * @return $this
-     */
-    public function setBody($body)
+
+    public function getURI(): string
     {
-        if (isset($body) !== true) {
-            return $this;
+        $index = $this->index ?? null;
+        $type = $this->type ?? null;
+        if (isset($type)) {
+            @trigger_error('Specifying types in urls has been deprecated', E_USER_DEPRECATED);
         }
 
-        $this->body = $body;
-        return $this;
-    }
-
-
-
-    /**
-     * @return string
-     */
-    protected function getURI()
-    {
-        $index = $this->index;
-        $type = $this->type;
-        $uri   = "/_search/template";
-
-        if (isset($index) === true && isset($type) === true) {
-            $uri = "/$index/$type/_search/template";
-        } elseif (isset($index) === true) {
-            $uri = "/$index/_search/template";
-        } elseif (isset($type) === true) {
-            $uri = "/_all/$type/_search/template";
+        if (isset($index) && isset($type)) {
+            return "/$index/$type/_search/template";
         }
-
-        return $uri;
+        if (isset($index)) {
+            return "/$index/_search/template";
+        }
+        return "/_search/template";
     }
 
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
+    public function getParamWhitelist(): array
     {
-        return array(
+        return [
             'ignore_unavailable',
+            'ignore_throttled',
             'allow_no_indices',
             'expand_wildcards',
             'preference',
             'routing',
             'scroll',
-            'search_type'
-        );
+            'search_type',
+            'explain',
+            'profile',
+            'typed_keys',
+            'rest_total_hits_as_int',
+            'ccs_minimize_roundtrips'
+        ];
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
+    public function getMethod(): string
     {
-        return 'GET';
+        return isset($this->body) ? 'POST' : 'GET';
+    }
+
+    public function setBody($body): SearchTemplate
+    {
+        if (isset($body) !== true) {
+            return $this;
+        }
+        $this->body = $body;
+
+        return $this;
     }
 }

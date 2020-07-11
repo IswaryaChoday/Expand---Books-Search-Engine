@@ -1,142 +1,79 @@
 <?php
-/**
- * User: zach
- * Date: 06/04/2013
- * Time: 13:33:19 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints;
 
+use Elasticsearch\Common\Exceptions\RuntimeException;
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Index
- * @package Elasticsearch\Endpoints
+ * Elasticsearch API name index
+ * Generated running $ php util/GenerateEndpoints.php 7.7
+ *
+ * @category Elasticsearch
+ * @package  Elasticsearch\Endpoints
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
+ * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
+ * @link     http://elastic.co
  */
 class Index extends AbstractEndpoint
 {
-    /** @var bool  */
-    private $createIfAbsent = false;
 
-    /**
-     * @param array $body
-     *
-     * @throws \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     * @return $this
-     */
-    public function setBody($body)
+    public function getURI(): string
+    {
+        if (isset($this->index) !== true) {
+            throw new RuntimeException(
+                'index is required for index'
+            );
+        }
+        $index = $this->index;
+        $id = $this->id ?? null;
+        $type = $this->type ?? null;
+        if (isset($type)) {
+            @trigger_error('Specifying types in urls has been deprecated', E_USER_DEPRECATED);
+        }
+
+        if (isset($type) && isset($id)) {
+            return "/$index/$type/$id";
+        }
+        if (isset($id)) {
+            return "/$index/_doc/$id";
+        }
+        if (isset($type)) {
+            return "/$index/$type";
+        }
+        return "/$index/_doc";
+    }
+
+    public function getParamWhitelist(): array
+    {
+        return [
+            'wait_for_active_shards',
+            'op_type',
+            'refresh',
+            'routing',
+            'timeout',
+            'version',
+            'version_type',
+            'if_seq_no',
+            'if_primary_term',
+            'pipeline'
+        ];
+    }
+
+    public function getMethod(): string
+    {
+        return 'POST';
+    }
+
+    public function setBody($body): Index
     {
         if (isset($body) !== true) {
             return $this;
         }
-
-
         $this->body = $body;
+
         return $this;
-    }
-
-
-    /**
-     * @return $this
-     */
-    public function createIfAbsent()
-    {
-        $this->createIfAbsent = true;
-        return $this;
-    }
-
-
-    /**
-     * @throws \Elasticsearch\Common\Exceptions\RuntimeException
-     * @return string
-     */
-    protected function getURI()
-    {
-
-        if (isset($this->index) !== true) {
-            throw new Exceptions\RuntimeException(
-                'index is required for Index'
-            );
-        }
-
-        if (isset($this->type) !== true) {
-            throw new Exceptions\RuntimeException(
-                'type is required for Index'
-            );
-        }
-
-        $id    = $this->id;
-        $index = $this->index;
-        $type  = $this->type;
-        $uri   = "/$index/$type";
-
-        if (isset($id) === true) {
-            $uri = "/$index/$type/$id";
-        }
-
-        if ($this->createIfAbsent === true) {
-            $uri .= $this->addCreateFlag();
-        }
-
-        return $uri;
-    }
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
-            'consistency',
-            'op_type',
-            'parent',
-            'percolate',
-            'refresh',
-            'replication',
-            'routing',
-            'timeout',
-            'timestamp',
-            'ttl',
-            'version',
-            'version_type',
-        );
-    }
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
-    {
-        if (isset($this->id) === true) {
-            return 'PUT';
-        } else {
-            return 'POST';
-        }
-    }
-
-
-    /**
-     * @return array
-     * @throws \Elasticsearch\Common\Exceptions\RuntimeException
-     */
-    protected function getBody()
-    {
-        if (isset($this->body) !== true) {
-            throw new Exceptions\RuntimeException('Document body must be set for index request');
-        } else {
-            return $this->body;
-        }
-    }
-
-    private function addCreateFlag()
-    {
-        if (isset($this->id) === true) {
-            return '/_create';
-        } else {
-            $this->params['op_type'] = 'create';
-            return "";
-        }
-
     }
 }

@@ -1,79 +1,54 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Cluster;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Reroute
+ * Elasticsearch API name cluster.reroute
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Cluster
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Cluster
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Reroute extends AbstractEndpoint
 {
-    /**
-     * @param array $body
-     *
-     * @throws \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     * @return $this
-     */
-    public function setBody($body)
+
+    public function getURI(): string
+    {
+
+        return "/_cluster/reroute";
+    }
+
+    public function getParamWhitelist(): array
+    {
+        return [
+            'dry_run',
+            'explain',
+            'retry_failed',
+            'metric',
+            'master_timeout',
+            'timeout'
+        ];
+    }
+
+    public function getMethod(): string
+    {
+        return 'POST';
+    }
+
+    public function setBody($body): Reroute
     {
         if (isset($body) !== true) {
             return $this;
         }
-
-
         $this->body = $body;
+
         return $this;
-    }
-
-
-
-    /**
-     * @return string
-     */
-    protected function getURI()
-    {
-        $uri   = "/_cluster/reroute";
-
-
-        return $uri;
-    }
-
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
-            'dry_run',
-            'filter_metadata',
-            'master_timeout',
-            'timeout',
-            'explain',
-            'metric'
-        );
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
-    {
-        return 'POST';
     }
 }

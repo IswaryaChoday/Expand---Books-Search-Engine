@@ -1,67 +1,48 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Indices;
 
+use Elasticsearch\Common\Exceptions\RuntimeException;
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Exists
+ * Elasticsearch API name indices.exists
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Indices
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Exists extends AbstractEndpoint
 {
-    /**
-     * @throws \Elasticsearch\Common\Exceptions\RuntimeException
-     * @return string
-     */
-    protected function getURI()
+
+    public function getURI(): string
     {
-        if (isset($this->index) !== true) {
-            throw new Exceptions\RuntimeException(
-                'index is required for Exists'
-            );
-        }
-        $index = $this->index;
-        $uri   = "/$index";
+        $index = $this->index ?? null;
 
-        if (isset($index) === true) {
-            $uri = "/$index";
+        if (isset($index)) {
+            return "/$index";
         }
-
-        return $uri;
+        throw new RuntimeException('Missing parameter for the endpoint indices.exists');
     }
 
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
+    public function getParamWhitelist(): array
     {
-        return array(
+        return [
+            'local',
             'ignore_unavailable',
             'allow_no_indices',
             'expand_wildcards',
-            'local',
-        );
+            'flat_settings',
+            'include_defaults'
+        ];
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
+    public function getMethod(): string
     {
         return 'HEAD';
     }

@@ -42,7 +42,8 @@ if(isset($_GET['q'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Search Engine</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
-      <link href="styling.css" rel="stylesheet">
+      <link rel="icon" href="https://img.icons8.com/emoji/48/000000/books-emoji.png">
+	<link href="styling.css" rel="stylesheet">
       <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Arvo" />
 		<script src='https://www.google.com/recaptcha/api.js'></script>
 

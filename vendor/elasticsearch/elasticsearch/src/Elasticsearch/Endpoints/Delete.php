@@ -1,83 +1,65 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints;
 
+use Elasticsearch\Common\Exceptions\RuntimeException;
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Delete
+ * Elasticsearch API name delete
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Delete extends AbstractEndpoint
 {
-    /**
-     * @throws \Elasticsearch\Common\Exceptions\RuntimeException
-     * @return string
-     */
-    protected function getURI()
+
+    public function getURI(): string
     {
         if (isset($this->id) !== true) {
-            throw new Exceptions\RuntimeException(
-                'id is required for Delete'
-            );
-        }
-        if (isset($this->index) !== true) {
-            throw new Exceptions\RuntimeException(
-                'index is required for Delete'
-            );
-        }
-        if (isset($this->type) !== true) {
-            throw new Exceptions\RuntimeException(
-                'type is required for Delete'
+            throw new RuntimeException(
+                'id is required for delete'
             );
         }
         $id = $this->id;
+        if (isset($this->index) !== true) {
+            throw new RuntimeException(
+                'index is required for delete'
+            );
+        }
         $index = $this->index;
-        $type = $this->type;
-        $uri   = "/$index/$type/$id";
-
-        if (isset($index) === true && isset($type) === true && isset($id) === true) {
-            $uri = "/$index/$type/$id";
+        $type = $this->type ?? null;
+        if (isset($type)) {
+            @trigger_error('Specifying types in urls has been deprecated', E_USER_DEPRECATED);
         }
 
-        return $uri;
+        if (isset($type)) {
+            return "/$index/$type/$id";
+        }
+        return "/$index/_doc/$id";
     }
 
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
+    public function getParamWhitelist(): array
     {
-        return array(
-            'consistency',
-            'parent',
+        return [
+            'wait_for_active_shards',
             'refresh',
-            'replication',
             'routing',
             'timeout',
+            'if_seq_no',
+            'if_primary_term',
             'version',
-            'version_type',
-        );
+            'version_type'
+        ];
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
+    public function getMethod(): string
     {
         return 'DELETE';
     }

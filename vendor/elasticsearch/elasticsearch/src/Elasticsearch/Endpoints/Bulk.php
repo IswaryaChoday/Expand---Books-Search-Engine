@@ -1,86 +1,86 @@
 <?php
-/**
- * User: zach
- * Date: 05/31/2013
- * Time: 16:47:11 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints;
 
+use Elasticsearch\Common\Exceptions\InvalidArgumentException;
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 use Elasticsearch\Serializers\SerializerInterface;
-use Elasticsearch\Transport;
+use Traversable;
 
 /**
  * Class Bulk
- * @package Elasticsearch\Endpoints
+ * Elasticsearch API name bulk
+ * Generated running $ php util/GenerateEndpoints.php 7.7
+ *
+ * @category Elasticsearch
+ * @package  Elasticsearch\Endpoints
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
+ * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
+ * @link     http://elastic.co
  */
-class Bulk extends AbstractEndpoint implements BulkEndpointInterface
+class Bulk extends AbstractEndpoint
 {
 
-    /**
-     * @param Transport           $transport
-     * @param SerializerInterface $serializer
-     */
-    public function __construct(Transport $transport, SerializerInterface $serializer)
+    public function __construct(SerializerInterface $serializer)
     {
         $this->serializer = $serializer;
-        parent::__construct($transport);
     }
 
+    public function getURI(): string
+    {
+        $index = $this->index ?? null;
+        $type = $this->type ?? null;
+        if (isset($type)) {
+            @trigger_error('Specifying types in urls has been deprecated', E_USER_DEPRECATED);
+        }
 
-    /**
-     * @param string|array $body
-     *
-     * @return $this
-     */
-    public function setBody($body)
+        if (isset($index) && isset($type)) {
+            return "/$index/$type/_bulk";
+        }
+        if (isset($index)) {
+            return "/$index/_bulk";
+        }
+        return "/_bulk";
+    }
+
+    public function getParamWhitelist(): array
+    {
+        return [
+            'wait_for_active_shards',
+            'refresh',
+            'routing',
+            'timeout',
+            'type',
+            '_source',
+            '_source_excludes',
+            '_source_includes',
+            'pipeline'
+        ];
+    }
+
+    public function getMethod(): string
+    {
+        return 'POST';
+    }
+    
+    public function setBody($body): Bulk
     {
         if (isset($body) !== true) {
             return $this;
         }
-
-        if (is_array($body) === true) {
-            $bulkBody = "";
+        if (is_array($body) === true || $body instanceof Traversable) {
             foreach ($body as $item) {
-                $bulkBody .= $this->serializer->serialize($item)."\n";
+                $this->body .= $this->serializer->serialize($item) . "\n";
             }
-            $body = $bulkBody;
+        } elseif (is_string($body)) {
+            $this->body = $body;
+            if (substr($body, -1) != "\n") {
+                $this->body .= "\n";
+            }
+        } else {
+            throw new InvalidArgumentException("Body must be an array, traversable object or string");
         }
-
-        $this->body = $body;
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    protected function getURI()
-    {
-       return $this->getOptionalURI('_bulk');
-
-    }
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
-            'consistency',
-            'refresh',
-            'replication',
-            'type',
-            'fields'
-        );
-    }
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
-    {
-        return 'POST';
     }
 }

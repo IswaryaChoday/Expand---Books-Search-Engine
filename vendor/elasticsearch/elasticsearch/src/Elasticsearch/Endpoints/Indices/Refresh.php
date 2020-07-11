@@ -1,63 +1,45 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Indices;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Refresh
+ * Elasticsearch API name indices.refresh
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Indices
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Refresh extends AbstractEndpoint
 {
-    /**
-     * @return string
-     */
-    protected function getURI()
+
+    public function getURI(): string
     {
-        $index = $this->index;
-        $uri   = "/_refresh";
+        $index = $this->index ?? null;
 
-        if (isset($index) === true) {
-            $uri = "/$index/_refresh";
+        if (isset($index)) {
+            return "/$index/_refresh";
         }
-
-        return $uri;
+        return "/_refresh";
     }
 
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
+    public function getParamWhitelist(): array
     {
-        return array(
+        return [
             'ignore_unavailable',
             'allow_no_indices',
-            'expand_wildcards',
-            'force',
-            'operation_threading',
-        );
+            'expand_wildcards'
+        ];
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
+    public function getMethod(): string
     {
-        return 'GET';
+        return 'POST';
     }
 }

@@ -1,44 +1,48 @@
 <?php
-/**
- * User: zach
- * Date: 6/20/13
- * Time: 9:04 AM
- */
+
+declare(strict_types = 1);
 
 namespace Elasticsearch\Serializers;
 
+use Elasticsearch\Common\Exceptions\RuntimeException;
+
+if (!defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
+    //PHP < 7.2 Define it as 0 so it does nothing
+    define('JSON_INVALID_UTF8_SUBSTITUTE', 0);
+}
+
 /**
  * Class EverythingToJSONSerializer
+ *
  * @category Elasticsearch
- * @package Elasticsearch\Serializers
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Serializers
+ * @author   Zachary Tong <zach@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-class EverythingToJSONSerializer extends AbstractJsonSerializer
+class EverythingToJSONSerializer implements SerializerInterface
 {
     /**
-     * Serialize assoc array into JSON string
-     *
-     * @param string|array $data Assoc array to encode into JSON
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function serialize($data)
+    public function serialize($data): string
     {
-        return $this->jsonEncode($data);
+        $data = json_encode($data, JSON_PRESERVE_ZERO_FRACTION + JSON_INVALID_UTF8_SUBSTITUTE);
+        if ($data === false) {
+            throw new RuntimeException("Failed to JSON encode: ".json_last_error());
+        }
+        if ($data === '[]') {
+            return '{}';
+        } else {
+            return $data;
+        }
     }
 
     /**
-     * Deserialize JSON into an assoc array
-     *
-     * @param string $data JSON encoded string
-     * @param array  $headers Response headers
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    public function deserialize($data, $headers)
+    public function deserialize(?string $data, array $headers)
     {
-        return $this->jsonDecode($data);
+        return json_decode($data, true);
     }
 }

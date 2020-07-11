@@ -1,122 +1,68 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints;
 
+use Elasticsearch\Common\Exceptions\RuntimeException;
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Get
+ * Elasticsearch API name get
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Get extends AbstractEndpoint
 {
 
-    /** @var bool  */
-    private $returnOnlySource = false;
-
-    /** @var bool  */
-    private $checkOnlyExistance = false;
-
-
-    /**
-     * @return $this
-     */
-    public function returnOnlySource()
-    {
-        $this->returnOnlySource = true;
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function checkOnlyExistance()
-    {
-        $this->checkOnlyExistance = true;
-        return $this;
-    }
-
-
-    /**
-     * @throws \Elasticsearch\Common\Exceptions\RuntimeException
-     * @return string
-     */
-    protected function getURI()
+    public function getURI(): string
     {
         if (isset($this->id) !== true) {
-            throw new Exceptions\RuntimeException(
-                'id is required for Get'
-            );
-        }
-        if (isset($this->index) !== true) {
-            throw new Exceptions\RuntimeException(
-                'index is required for Get'
-            );
-        }
-        if (isset($this->type) !== true) {
-            throw new Exceptions\RuntimeException(
-                'type is required for Get'
+            throw new RuntimeException(
+                'id is required for get'
             );
         }
         $id = $this->id;
+        if (isset($this->index) !== true) {
+            throw new RuntimeException(
+                'index is required for get'
+            );
+        }
         $index = $this->index;
-        $type = $this->type;
-        $uri   = "/$index/$type/$id";
-
-        if (isset($index) === true && isset($type) === true && isset($id) === true) {
-            $uri = "/$index/$type/$id";
+        $type = $this->type ?? null;
+        if (isset($type)) {
+            @trigger_error('Specifying types in urls has been deprecated', E_USER_DEPRECATED);
         }
 
-        if ($this->returnOnlySource === true) {
-            $uri .= '/_source';
+        if (isset($type)) {
+            return "/$index/$type/$id";
         }
-
-        return $uri;
+        return "/$index/_doc/$id";
     }
 
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
+    public function getParamWhitelist(): array
     {
-        return array(
-            'fields',
-            'parent',
+        return [
+            'stored_fields',
             'preference',
             'realtime',
             'refresh',
             'routing',
             '_source',
-            '_source_exclude',
-            '_source_include',
+            '_source_excludes',
+            '_source_includes',
             'version',
-            'version_type',
-        );
+            'version_type'
+        ];
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
+    public function getMethod(): string
     {
-        if ($this->checkOnlyExistance === true) {
-            return 'HEAD';
-        } else {
-            return 'GET';
-        }
+        return 'GET';
     }
 }

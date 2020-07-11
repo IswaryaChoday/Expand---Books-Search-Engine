@@ -1,12 +1,11 @@
 <?php
-/**
- * User: zach
- * Date: 5/3/13
- * Time: 11:42 AM
- */
+
+declare(strict_types = 1);
 
 namespace Elasticsearch\Connections;
 
+use Elasticsearch\Serializers\SerializerInterface;
+use Elasticsearch\Transport;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -14,23 +13,62 @@ use Psr\Log\LoggerInterface;
  *
  * @category Elasticsearch
  * @package  Elasticsearch\Connections
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @author   Zachary Tong <zach@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
 interface ConnectionInterface
 {
-    public function __construct($hostDetails, $connectionParams, LoggerInterface $log, LoggerInterface $trace);
+    /**
+     * Get the transport schema for this connection
+     */
+    public function getTransportSchema(): string;
 
-    public function getTransportSchema();
+    /**
+     * Get the hostname for this connection
+     */
+    public function getHost(): string;
 
-    public function isAlive();
+    /**
+     * Get the port for this connection
+     *
+     * @return int
+     */
+    public function getPort();
 
-    public function markAlive();
+    /**
+     * Get the username:password string for this connection, null if not set
+     */
+    public function getUserPass(): ?string;
 
-    public function markDead();
+    /**
+     * Get the URL path suffix, null if not set
+     */
+    public function getPath(): ?string;
 
-    public function getLastRequestInfo();
+    /**
+     * Check to see if this instance is marked as 'alive'
+     */
+    public function isAlive(): bool;
 
-    public function performRequest($method, $uri, $params = null, $body = null);
+    /**
+     * Mark this instance as 'alive'
+     */
+    public function markAlive(): void;
+
+    /**
+     * Mark this instance as 'dead'
+     */
+    public function markDead(): void;
+
+    /**
+     * Return an associative array of information about the last request
+     */
+    public function getLastRequestInfo(): array;
+
+    /**
+     * @param  null $body
+     * @return mixed
+     */
+    public function performRequest(string $method, string $uri, array $params = [], $body = null, array $options = [], Transport $transport = null);
 }

@@ -1,83 +1,63 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Cat;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Aliases
+ * Elasticsearch API name cat.aliases
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Cat
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Cat
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Aliases extends AbstractEndpoint
 {
-    // A comma-separated list of alias names to return
-    private $name;
+    protected $name;
 
+    public function getURI(): string
+    {
+        $name = $this->name ?? null;
 
-    /**
-     * @param $name
-     *
-     * @return $this
-     */
-    public function setName($name)
+        if (isset($name)) {
+            return "/_cat/aliases/$name";
+        }
+        return "/_cat/aliases";
+    }
+
+    public function getParamWhitelist(): array
+    {
+        return [
+            'format',
+            'local',
+            'h',
+            'help',
+            's',
+            'v',
+            'expand_wildcards'
+        ];
+    }
+
+    public function getMethod(): string
+    {
+        return 'GET';
+    }
+
+    public function setName($name): Aliases
     {
         if (isset($name) !== true) {
             return $this;
         }
-
-        $this->name = $name;
-        return $this;
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getURI()
-    {
-        $name = $this->name;
-        $uri   = "/_cat/aliases";
-
-        if (isset($name) === true) {
-            $uri = "/_cat/aliases/$name";
+        if (is_array($name) === true) {
+            $name = implode(",", $name);
         }
+        $this->name = $name;
 
-        return $uri;
-    }
-
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
-            'local',
-            'master_timeout',
-            'h',
-            'help',
-            'v',
-        );
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
-    {
-        return 'GET';
+        return $this;
     }
 }

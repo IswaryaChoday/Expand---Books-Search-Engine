@@ -1,84 +1,64 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Cat;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Allocation
+ * Elasticsearch API name cat.allocation
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Cat
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Cat
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Allocation extends AbstractEndpoint
 {
-    // A comma-separated list of node IDs or names to limit the returned information
-    private $node_id;
+    protected $node_id;
 
-
-    /**
-     * @param $node_id
-     *
-     * @return $this
-     */
-    public function setNodeId($node_id)
+    public function getURI(): string
     {
-        if (isset($node_id) !== true) {
-            return $this;
-        }
+        $node_id = $this->node_id ?? null;
 
-        $this->node_id = $node_id;
-        return $this;
+        if (isset($node_id)) {
+            return "/_cat/allocation/$node_id";
+        }
+        return "/_cat/allocation";
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getURI()
+    public function getParamWhitelist(): array
     {
-        $node_id = $this->node_id;
-        $uri   = "/_cat/allocation";
-
-        if (isset($node_id) === true) {
-            $uri = "/_cat/allocation/$node_id";
-        }
-
-        return $uri;
-    }
-
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
+        return [
+            'format',
             'bytes',
             'local',
             'master_timeout',
             'h',
             'help',
-            'v',
-        );
+            's',
+            'v'
+        ];
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
+    public function getMethod(): string
     {
         return 'GET';
+    }
+
+    public function setNodeId($node_id): Allocation
+    {
+        if (isset($node_id) !== true) {
+            return $this;
+        }
+        if (is_array($node_id) === true) {
+            $node_id = implode(",", $node_id);
+        }
+        $this->node_id = $node_id;
+
+        return $this;
     }
 }

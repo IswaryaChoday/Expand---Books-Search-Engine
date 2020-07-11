@@ -1,59 +1,64 @@
 <?php
-/**
- * User: zach
- * Date: 02/10/2014
- * Time: 13:52:08 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Cat;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class ThreadPool
+ * Elasticsearch API name cat.thread_pool
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Cat
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Cat
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class ThreadPool extends AbstractEndpoint
 {
-    /**
-     * @return string
-     */
-    protected function getURI()
-    {
-        $uri   = "/_cat/thread_pool";
+    protected $thread_pool_patterns;
 
-        return $uri;
+    public function getURI(): string
+    {
+        $thread_pool_patterns = $this->thread_pool_patterns ?? null;
+
+        if (isset($thread_pool_patterns)) {
+            return "/_cat/thread_pool/$thread_pool_patterns";
+        }
+        return "/_cat/thread_pool";
     }
 
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
+    public function getParamWhitelist(): array
     {
-        return array(
+        return [
+            'format',
+            'size',
             'local',
             'master_timeout',
             'h',
             'help',
-            'v',
-            'full_id',
-        );
+            's',
+            'v'
+        ];
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
+    public function getMethod(): string
     {
         return 'GET';
+    }
+
+    public function setThreadPoolPatterns($thread_pool_patterns): ThreadPool
+    {
+        if (isset($thread_pool_patterns) !== true) {
+            return $this;
+        }
+        if (is_array($thread_pool_patterns) === true) {
+            $thread_pool_patterns = implode(",", $thread_pool_patterns);
+        }
+        $this->thread_pool_patterns = $thread_pool_patterns;
+
+        return $this;
     }
 }

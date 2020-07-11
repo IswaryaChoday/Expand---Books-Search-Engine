@@ -1,95 +1,73 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Indices;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Stats
+ * Elasticsearch API name indices.stats
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Indices
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Stats extends AbstractEndpoint
 {
-    // Limit the information returned the specific metrics.
-    private $metric;
+    protected $metric;
 
-
-    /**
-     * @param $metric
-     *
-     * @return $this
-     */
-    public function setMetric($metric)
+    public function getURI(): string
     {
-        if (isset($metric) !== true) {
-            return $this;
-        }
+        $metric = $this->metric ?? null;
+        $index = $this->index ?? null;
 
-        if (is_array($metric)) {
-            $metric = implode(",", $metric);
+        if (isset($index) && isset($metric)) {
+            return "/$index/_stats/$metric";
         }
-
-        $this->metric = $metric;
-        return $this;
+        if (isset($metric)) {
+            return "/_stats/$metric";
+        }
+        if (isset($index)) {
+            return "/$index/_stats";
+        }
+        return "/_stats";
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getURI()
+    public function getParamWhitelist(): array
     {
-        $index = $this->index;
-        $metric = $this->metric;
-        $uri   = "/_stats";
-
-        if (isset($index) === true && isset($metric) === true) {
-            $uri = "/$index/_stats/$metric";
-        } elseif (isset($index) === true) {
-            $uri = "/$index/_stats";
-        } elseif (isset($metric) === true) {
-            $uri = "/_stats/$metric";
-        }
-
-        return $uri;
-    }
-
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
+        return [
             'completion_fields',
             'fielddata_fields',
             'fields',
             'groups',
-            'human',
             'level',
             'types',
-            'metric'
-        );
+            'include_segment_file_sizes',
+            'include_unloaded_segments',
+            'expand_wildcards',
+            'forbid_closed_indices'
+        ];
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
+    public function getMethod(): string
     {
         return 'GET';
+    }
+
+    public function setMetric($metric): Stats
+    {
+        if (isset($metric) !== true) {
+            return $this;
+        }
+        if (is_array($metric) === true) {
+            $metric = implode(",", $metric);
+        }
+        $this->metric = $metric;
+
+        return $this;
     }
 }

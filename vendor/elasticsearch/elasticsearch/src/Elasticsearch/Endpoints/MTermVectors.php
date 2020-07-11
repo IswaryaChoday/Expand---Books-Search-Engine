@@ -1,53 +1,44 @@
 <?php
-/**
- * User: zach
- * Date: 05/31/2013
- * Time: 16:47:11 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class MTermVectors
- * @package Elasticsearch\Endpoints
+ * Elasticsearch API name mtermvectors
+ * Generated running $ php util/GenerateEndpoints.php 7.7
+ *
+ * @category Elasticsearch
+ * @package  Elasticsearch\Endpoints
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
+ * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
+ * @link     http://elastic.co
  */
 class MTermVectors extends AbstractEndpoint
 {
 
-    /**
-     * @param array $body
-     *
-     * @throws \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     * @return $this
-     */
-    public function setBody($body)
+    public function getURI(): string
     {
-        if (isset($body) !== true) {
-            return $this;
+        $index = $this->index ?? null;
+        $type = $this->type ?? null;
+        if (isset($type)) {
+            @trigger_error('Specifying types in urls has been deprecated', E_USER_DEPRECATED);
         }
 
-        $this->body = $body;
-        return $this;
+        if (isset($index) && isset($type)) {
+            return "/$index/$type/_mtermvectors";
+        }
+        if (isset($index)) {
+            return "/$index/_mtermvectors";
+        }
+        return "/_mtermvectors";
     }
 
-    /**
-     * @return string
-     */
-    protected function getURI()
+    public function getParamWhitelist(): array
     {
-        return $this->getOptionalURI('_mtermvectors');
-
-    }
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
+        return [
             'ids',
             'term_statistics',
             'field_statistics',
@@ -57,16 +48,24 @@ class MTermVectors extends AbstractEndpoint
             'payloads',
             'preference',
             'routing',
-            'parent',
-            'realtime'
-        );
+            'realtime',
+            'version',
+            'version_type'
+        ];
     }
 
-    /**
-     * @return string
-     */
-    protected function getMethod()
+    public function getMethod(): string
     {
-        return 'POST';
+        return isset($this->body) ? 'POST' : 'GET';
+    }
+
+    public function setBody($body): MTermVectors
+    {
+        if (isset($body) !== true) {
+            return $this;
+        }
+        $this->body = $body;
+
+        return $this;
     }
 }

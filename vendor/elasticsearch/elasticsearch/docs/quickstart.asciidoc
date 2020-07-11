@@ -1,7 +1,9 @@
-
+[[quickstart]]
 == Quickstart
 
-This section will give you a quick overview of the client and how the major functions work.
+This section gives you a quick overview of the client and how the major 
+functions work.
+
 
 === Installation
 
@@ -11,7 +13,7 @@ This section will give you a quick overview of the client and how the major func
 ----------------------------
 {
     "require": {
-        "elasticsearch/elasticsearch": "~1.0"
+        "elasticsearch/elasticsearch": "~7.0"
     }
 }
 ----------------------------
@@ -21,61 +23,162 @@ This section will give you a quick overview of the client and how the major func
 [source,shell]
 ----------------------------
 curl -s http://getcomposer.org/installer | php
-php composer.phar install
+php composer.phar install --no-dev
 ----------------------------
 
-* Include the autoloader in your main project (if you haven't already), and instantiate a new client :
+* Include the autoloader in your main project (if you haven't already), and 
+  instantiate a new client :
 +
 [source,php]
 ----------------------------
 require 'vendor/autoload.php';
 
-$client = new Elasticsearch\Client();
+use Elasticsearch\ClientBuilder;
+
+$client = ClientBuilder::create()->build();
 ----------------------------
 
 
 === Index a document
 
-In elasticsearch-php, almost everything is configured by associative arrays.  The REST endpoint, document and optional parameters - everything is an associative array.
+In elasticsearch-php, almost everything is configured by associative arrays. The 
+REST endpoint, document and optional parameters - everything is an associative 
+array.
 
-To index a document, we simply specify a `body` that contains the document that we wish to index.  Each field in the document is represented by a different key/value pair in the associative array.
-
-The index, type and ID are also specified in the parameters assoc. array:
+To index a document, we need to specify three pieces of information: index, id 
+and a document body. This is done by constructing an associative array of 
+key:value pairs. The request body is itself an associative array with key:value 
+pairs corresponding to the data in your document:
 
 [source,php]
 ----------------------------
-$params = array();
-$params['body']  = array('testField' => 'abc');
-$params['index'] = 'my_index';
-$params['type']  = 'my_type';
-$params['id']    = 'my_id';
-$ret = $client->index($params);
+$params = [
+    'index' => 'my_index',
+    'id'    => 'my_id',
+    'body'  => ['testField' => 'abc']
+];
+
+$response = $client->index($params);
+print_r($response);
 ----------------------------
+
+The response that you get back indicates that the document was created in the 
+index that you specified. The response is an associative array containing a 
+decoded version of the JSON that {es} returns:
+
+[source,php]
+----------------------------
+Array
+(
+    [_index] => my_index
+    [_type] => _doc
+    [_id] => my_id
+    [_version] => 1
+    [created] => 1
+)
+
+----------------------------
+
 
 === Get a document
 
-Let's get the document that we just indexed:
+Let's get the document that we just indexed. This returns the document:
 
 [source,php]
 ----------------------------
-$getParams = array();
-$getParams['index'] = 'my_index';
-$getParams['type']  = 'my_type';
-$getParams['id']    = 'my_id';
-$retDoc = $client->get($getParams);
+$params = [
+    'index' => 'my_index',
+    'id'    => 'my_id'
+];
+
+$response = $client->get($params);
+print_r($response);
 ----------------------------
+
+
+The response contains metadata such as index, version, and so on as well as a 
+`_source` field, which is the original document you sent to {es}.
+
+[source,php]
+----------------------------
+Array
+(
+    [_index] => my_index
+    [_type] => _doc
+    [_id] => my_id
+    [_version] => 1
+    [found] => 1
+    [_source] => Array
+        (
+            [testField] => abc
+        )
+
+)
+----------------------------
+
 
 === Search for a document
 
-Searching is a hallmark of elasticsearch, so let's perform a search.  We are going to use the Match query as a demonstration:
+Searching is a hallmark of {es}, so let's perform a search.  We are going to use 
+the `match` query as a demonstration:
 
 [source,php]
 ----------------------------
-$searchParams['index'] = 'my_index';
-$searchParams['type']  = 'my_type';
-$searchParams['body']['query']['match']['testField'] = 'abc';
-$retDoc = $client->search($searchParams);
+$params = [
+    'index' => 'my_index',
+    'body'  => [
+        'query' => [
+            'match' => [
+                'testField' => 'abc'
+            ]
+        ]
+    ]
+];
+
+$response = $client->search($params);
+print_r($response);
 ----------------------------
+
+The response here is different from the previous ones. You can see metadata 
+(`took`, `timed_out`, etc.) and an array named `hits`. This represents your 
+search results. Inside of `hits` is another array named `hits`, which contains 
+individual search results:
+
+[source,php]
+----------------------------
+Array
+(
+    [took] => 1
+    [timed_out] =>
+    [_shards] => Array
+        (
+            [total] => 5
+            [successful] => 5
+            [failed] => 0
+        )
+
+    [hits] => Array
+        (
+            [total] => 1
+            [max_score] => 0.30685282
+            [hits] => Array
+                (
+                    [0] => Array
+                        (
+                            [_index] => my_index
+                            [_type] => _doc
+                            [_id] => my_id
+                            [_score] => 0.30685282
+                            [_source] => Array
+                                (
+                                    [testField] => abc
+                                )
+                        )
+                )
+        )
+)
+----------------------------
+
 
 === Delete a document
 
@@ -83,41 +186,101 @@ Alright, let's go ahead and delete the document that we added previously:
 
 [source,php]
 ----------------------------
-$deleteParams = array();
-$deleteParams['index'] = 'my_index';
-$deleteParams['type'] = 'my_type';
-$deleteParams['id'] = 'my_id';
-$retDelete = $client->delete($deleteParams);
+$params = [
+    'index' => 'my_index',
+    'id'    => 'my_id'
+];
+
+$response = $client->delete($params);
+print_r($response);
 ----------------------------
 
-=== Delete an index
-
-Due to the dynamic nature of elasticsearch, the first document we added automatically built an index with some default settings.  Let's delete that index because we want to specify our own settings later:
+This syntax is identical to the `get` syntax. The only difference is the 
+operation: `delete` instead of `get`. The response confirms the document is 
+deleted:
 
 [source,php]
 ----------------------------
-$deleteParams = array();
-$deleteParams['index'] = 'my_index';
-$client->indices()->delete($deleteParams);
+Array
+(
+    [found] => 1
+    [_index] => my_index
+    [_type] => _doc
+    [_id] => my_id
+    [_version] => 2
+)
+----------------------------
+
+
+=== Delete an index
+
+Due to the dynamic nature of {es}, the first document you added automatically 
+built an index with some default settings. Delete that index and specify your 
+own settings later:
+
+[source,php]
+----------------------------
+$deleteParams = [
+    'index' => 'my_index'
+];
+$response = $client->indices()->delete($deleteParams);
+print_r($response);
+----------------------------
+
+The response:
+
+
+[source,php]
+----------------------------
+Array
+(
+    [acknowledged] => 1
+)
 ----------------------------
 
 === Create an index
 
-Ok, now that we are starting fresh, let's add a new index with some custom settings:
+Now that you are starting fresh (no data or index), add a new index with custom 
+settings:
 
 [source,php]
 ----------------------------
-$indexParams['index'] = 'my_index';
-$indexParams['body']['settings']['number_of_shards'] = 2;
-$indexParams['body']['settings']['number_of_replicas'] = 0;
-$client->indices()->create($indexParams);
+$params = [
+    'index' => 'my_index',
+    'body' => [
+        'settings' => [
+            'number_of_shards' => 2,
+            'number_of_replicas' => 0
+        ]
+    ]
+];
+
+$response = $client->indices()->create($params);
+print_r($response);
 ----------------------------
+
+{es} now creates that index with your chosen settings and return an 
+acknowledgement:
+
+[source,php]
+----------------------------
+Array
+(
+    [acknowledged] => 1
+)
+----------------------------
+
 
 === Wrap up
 
-That was just a crash-course overview of the client and it's syntax.  If you are familiar with elasticsearch, you'll notice that the methods are named just like REST endpoints.
+That was just a crash-course overview of the client and it's syntax. If you are 
+familiar with {es}, you'll notice that the methods are named just like REST 
+endpoints.
 
-You'll also notice that the client is configured in a manner that facilitates easy discovery via your IDE.  All core actions are available under the `$client` object (indexing, searching, getting, etc).  Index and cluster management are located under the `$client->indices()` and `$client->cluster()` objects, respectively.
+You may also notice that the client is configured in a manner that facilitates 
+easy discovery via your IDE. All core actions are available under the `$client` 
+object (indexing, searching, getting, etc). Index and cluster management are 
+located under the `$client->indices()` and `$client->cluster()` objects, 
+respectively.
 
-Check out the rest of the Documentation to see how the entire client works.
-
+Check out the rest of the documentation to see how the entire client works.
