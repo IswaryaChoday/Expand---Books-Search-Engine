@@ -161,7 +161,7 @@ function highlightWords($text,$word) {
                     <div class=panel-heading>
                       <h2 class=panel-title>
                         <a href="<?php
-                        $output=('http://52.73.241.4/Expand---Books-Search-Engine/singlebook.php?book_id='.$results[$i]['_id']);
+                        $output=('http://52.73.241.4/Expand-Books-Search-Engine/singlebook.php?book_id='.$results[$i]['_id']);
                         // $output = ('https://www.google.com/search?q='.$r['_source']['title']);
                         echo($output);
                       ?>" ONCLICK=search_book('<?php echo $output; ?>') target="_blank"><p><br>
