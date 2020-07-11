@@ -3,7 +3,7 @@ header('Access-Control-Allow-Headers: *');
 require_once 'init.php';
 if(isset($_GET['q'])) {
 	$q = strip_tags($_GET['q']);
-
+        echo "<script>console.log('Debug Objects: " . $q . "' );</script>";
 	$from =0;
 	$size = 10;
 	$query = $es->search([

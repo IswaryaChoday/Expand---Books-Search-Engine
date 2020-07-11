@@ -1,111 +1,69 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Scroll
+ * Elasticsearch API name scroll
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Scroll extends AbstractEndpoint
 {
-    // The scroll ID
-    private $scroll_id;
+    protected $scroll_id;
 
-    private $clear = false;
+    public function getURI(): string
+    {
+        $scroll_id = $this->scroll_id ?? null;
+        if (isset($scroll_id)) {
+            @trigger_error('A scroll id can be quite large and should be specified as part of the body', E_USER_DEPRECATED);
+        }
 
+        if (isset($scroll_id)) {
+            return "/_search/scroll/$scroll_id";
+        }
+        return "/_search/scroll";
+    }
 
-    /**
-     * @param array $body
-     *
-     * @throws \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     * @return $this
-     */
-    public function setBody($body)
+    public function getParamWhitelist(): array
+    {
+        return [
+            'scroll',
+            'scroll_id',
+            'rest_total_hits_as_int'
+        ];
+    }
+
+    public function getMethod(): string
+    {
+        return isset($this->body) ? 'POST' : 'GET';
+    }
+
+    public function setBody($body): Scroll
     {
         if (isset($body) !== true) {
             return $this;
         }
-
-
         $this->body = $body;
+
         return $this;
     }
 
-
-    public function setClearScroll($clear)
-    {
-        $this->clear = $clear;
-        return $this;
-    }
-
-
-    /**
-     * @param $scroll_id
-     *
-     * @return $this
-     */
-    public function setScrollId($scroll_id)
+    public function setScrollId($scroll_id): Scroll
     {
         if (isset($scroll_id) !== true) {
             return $this;
         }
-
         $this->scroll_id = $scroll_id;
+
         return $this;
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getURI()
-    {
-        $scroll_id = $this->scroll_id;
-        $uri   = "/_search/scroll";
-
-        if (isset($scroll_id) === true) {
-            $uri = "/_search/scroll/$scroll_id";
-        }
-
-        return $uri;
-    }
-
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
-            'scroll',
-            'scroll_id',
-        );
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
-    {
-        if ($this->clear == true) {
-            return 'DELETE';
-        }
-
-        return 'GET';
     }
 }

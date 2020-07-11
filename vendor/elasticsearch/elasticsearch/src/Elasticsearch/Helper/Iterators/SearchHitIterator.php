@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Elasticsearch\Helper\Iterators;
 
 use Iterator;
@@ -11,15 +13,16 @@ use Iterator;
  * @package  Elasticsearch\Helper\Iterators
  * @author   Arturo Mejia <arturo.mejia@kreatetechnology.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  * @see      Iterator
  */
-class SearchHitIterator implements Iterator {
+class SearchHitIterator implements Iterator, \Countable
+{
 
     /**
      * @var SearchResponseIterator
      */
-    private   $search_responses;
+    private $search_responses;
 
     /**
      * @var int
@@ -37,6 +40,11 @@ class SearchHitIterator implements Iterator {
     protected $current_hit_data;
 
     /**
+     * @var int
+     */
+    protected $count = 0;
+
+    /**
      * Constructor
      *
      * @param SearchResponseIterator $search_responses
@@ -52,15 +60,20 @@ class SearchHitIterator implements Iterator {
      * @return void
      * @see    Iterator::rewind()
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->current_key = 0;
         $this->search_responses->rewind();
 
         // The first page may be empty. In that case, the next page is fetched.
         $current_page = $this->search_responses->current();
-        if($this->search_responses->valid() && empty($current_page['hits']['hits'])) {
+        if ($this->search_responses->valid() && empty($current_page['hits']['hits'])) {
             $this->search_responses->next();
+        }
+
+        $this->count = 0;
+        if (isset($current_page['hits']) && isset($current_page['hits']['total'])) {
+            $this->count = $current_page['hits']['total'];
         }
 
         $this->readPageData();
@@ -74,12 +87,12 @@ class SearchHitIterator implements Iterator {
      * @return void
      * @see    Iterator::next()
      */
-    public function next()
+    public function next(): void
     {
         $this->current_key++;
         $this->current_hit_index++;
         $current_page = $this->search_responses->current();
-        if(isset($current_page['hits']['hits'][$this->current_hit_index])) {
+        if (isset($current_page['hits']['hits'][$this->current_hit_index])) {
             $this->current_hit_data = $current_page['hits']['hits'][$this->current_hit_index];
         } else {
             $this->search_responses->next();
@@ -93,7 +106,7 @@ class SearchHitIterator implements Iterator {
      * @return bool
      * @see    Iterator::valid()
      */
-    public function valid()
+    public function valid(): bool
     {
         return is_array($this->current_hit_data);
     }
@@ -104,7 +117,7 @@ class SearchHitIterator implements Iterator {
      * @return array
      * @see    Iterator::current()
      */
-    public function current()
+    public function current(): array
     {
         return $this->current_hit_data;
     }
@@ -115,9 +128,9 @@ class SearchHitIterator implements Iterator {
      * @return int
      * @see    Iterator::key()
      */
-    public function key()
+    public function key(): int
     {
-        return $this->current_hit_index;
+        return $this->current_key;
     }
 
     /**
@@ -125,15 +138,22 @@ class SearchHitIterator implements Iterator {
      *
      * @internal
      */
-    private function readPageData()
+    private function readPageData(): void
     {
-        if($this->search_responses->valid()) {
+        if ($this->search_responses->valid()) {
             $current_page = $this->search_responses->current();
             $this->current_hit_index = 0;
             $this->current_hit_data = $current_page['hits']['hits'][$this->current_hit_index];
         } else {
             $this->current_hit_data = null;
         }
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function count(): int
+    {
+        return $this->count;
     }
 }

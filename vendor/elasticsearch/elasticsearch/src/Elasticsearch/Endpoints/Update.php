@@ -1,109 +1,79 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints;
 
+use Elasticsearch\Common\Exceptions\RuntimeException;
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Update
+ * Elasticsearch API name update
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Update extends AbstractEndpoint
 {
-    /**
-     * @param array $body
-     *
-     * @throws \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     * @return $this
-     */
-    public function setBody($body)
+
+    public function getURI(): string
+    {
+        if (isset($this->id) !== true) {
+            throw new RuntimeException(
+                'id is required for update'
+            );
+        }
+        $id = $this->id;
+        if (isset($this->index) !== true) {
+            throw new RuntimeException(
+                'index is required for update'
+            );
+        }
+        $index = $this->index;
+        $type = $this->type ?? null;
+        if (isset($type)) {
+            @trigger_error('Specifying types in urls has been deprecated', E_USER_DEPRECATED);
+        }
+
+        if (isset($type)) {
+            return "/$index/$type/$id/_update";
+        }
+        return "/$index/_update/$id";
+    }
+
+    public function getParamWhitelist(): array
+    {
+        return [
+            'wait_for_active_shards',
+            '_source',
+            '_source_excludes',
+            '_source_includes',
+            'lang',
+            'refresh',
+            'retry_on_conflict',
+            'routing',
+            'timeout',
+            'if_seq_no',
+            'if_primary_term'
+        ];
+    }
+
+    public function getMethod(): string
+    {
+        return 'POST';
+    }
+
+    public function setBody($body): Update
     {
         if (isset($body) !== true) {
             return $this;
         }
-
-
         $this->body = $body;
+
         return $this;
-    }
-
-
-
-    /**
-     * @throws \Elasticsearch\Common\Exceptions\RuntimeException
-     * @return string
-     */
-    protected function getURI()
-    {
-        if (isset($this->id) !== true) {
-            throw new Exceptions\RuntimeException(
-                'id is required for Update'
-            );
-        }
-        if (isset($this->index) !== true) {
-            throw new Exceptions\RuntimeException(
-                'index is required for Update'
-            );
-        }
-        if (isset($this->type) !== true) {
-            throw new Exceptions\RuntimeException(
-                'type is required for Update'
-            );
-        }
-        $id = $this->id;
-        $index = $this->index;
-        $type = $this->type;
-        $uri   = "/$index/$type/$id/_update";
-
-        if (isset($index) === true && isset($type) === true && isset($id) === true) {
-            $uri = "/$index/$type/$id/_update";
-        }
-
-        return $uri;
-    }
-
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
-            'consistency',
-            'fields',
-            'lang',
-            'parent',
-            'refresh',
-            'replication',
-            'retry_on_conflict',
-            'routing',
-            'script',
-            'timeout',
-            'timestamp',
-            'ttl',
-            'version',
-            'version_type',
-        );
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
-    {
-        return 'POST';
     }
 }

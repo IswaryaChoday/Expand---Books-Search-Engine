@@ -6,19 +6,24 @@ namespace Composer\Autoload;
 
 class ComposerStaticInit29aae56feb78196e3f5a72f8748b4f13
 {
+    public static $files = array (
+        'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
+        '8592c7b0947d8a0965a9e8c3d16f9c24' => __DIR__ . '/..' . '/elasticsearch/elasticsearch/src/autoload.php',
+    );
+
     public static $prefixLengthsPsr4 = array (
-        'S' => 
+        'R' => 
         array (
-            'Symfony\\Component\\EventDispatcher\\' => 34,
+            'React\\Promise\\' => 14,
         ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
-            'Psr\\Container\\' => 14,
         ),
-        'M' => 
+        'G' => 
         array (
-            'Monolog\\' => 8,
+            'GuzzleHttp\\Stream\\' => 18,
+            'GuzzleHttp\\Ring\\' => 16,
         ),
         'E' => 
         array (
@@ -27,46 +32,25 @@ class ComposerStaticInit29aae56feb78196e3f5a72f8748b4f13
     );
 
     public static $prefixDirsPsr4 = array (
-        'Symfony\\Component\\EventDispatcher\\' => 
+        'React\\Promise\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/event-dispatcher',
+            0 => __DIR__ . '/..' . '/react/promise/src',
         ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
         ),
-        'Psr\\Container\\' => 
+        'GuzzleHttp\\Stream\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/container/src',
+            0 => __DIR__ . '/..' . '/ezimuel/guzzlestreams/src',
         ),
-        'Monolog\\' => 
+        'GuzzleHttp\\Ring\\' => 
         array (
-            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+            0 => __DIR__ . '/..' . '/ezimuel/ringphp/src',
         ),
         'Elasticsearch\\' => 
         array (
             0 => __DIR__ . '/..' . '/elasticsearch/elasticsearch/src/Elasticsearch',
-        ),
-    );
-
-    public static $prefixesPsr0 = array (
-        'P' => 
-        array (
-            'Pimple' => 
-            array (
-                0 => __DIR__ . '/..' . '/pimple/pimple/src',
-            ),
-        ),
-        'G' => 
-        array (
-            'Guzzle\\Tests' => 
-            array (
-                0 => __DIR__ . '/..' . '/guzzle/guzzle/tests',
-            ),
-            'Guzzle' => 
-            array (
-                0 => __DIR__ . '/..' . '/guzzle/guzzle/src',
-            ),
         ),
     );
 
@@ -75,7 +59,6 @@ class ComposerStaticInit29aae56feb78196e3f5a72f8748b4f13
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit29aae56feb78196e3f5a72f8748b4f13::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit29aae56feb78196e3f5a72f8748b4f13::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit29aae56feb78196e3f5a72f8748b4f13::$prefixesPsr0;
 
         }, null, ClassLoader::class);
     }

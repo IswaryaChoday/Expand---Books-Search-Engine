@@ -1,39 +1,42 @@
 <?php
-/**
- * User: zach
- * Date: 11/21/13
- * Time: 3:43 PM
- */
+
+declare(strict_types = 1);
 
 namespace Elasticsearch\ConnectionPool;
 
 use Elasticsearch\Common\Exceptions\NoNodesAvailableException;
 use Elasticsearch\ConnectionPool\Selectors\SelectorInterface;
-use Elasticsearch\Connections\AbstractConnection;
-use Elasticsearch\Connections\ConnectionFactory;
+use Elasticsearch\Connections\Connection;
+use Elasticsearch\Connections\ConnectionInterface;
+use Elasticsearch\Connections\ConnectionFactoryInterface;
 
-class StaticNoPingConnectionPool extends AbstractConnectionPool
+class StaticNoPingConnectionPool extends AbstractConnectionPool implements ConnectionPoolInterface
 {
+    /**
+     * @var int
+     */
     private $pingTimeout    = 60;
+
+    /**
+     * @var int
+     */
     private $maxPingTimeout = 3600;
 
-    public function __construct($connections, SelectorInterface $selector, ConnectionFactory $factory, $connectionPoolParams)
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct($connections, SelectorInterface $selector, ConnectionFactoryInterface $factory, $connectionPoolParams)
     {
         parent::__construct($connections, $selector, $factory, $connectionPoolParams);
     }
 
-
-    /**
-     * @param bool $force
-     *
-     * @return AbstractConnection
-     * @throws \Elasticsearch\Common\Exceptions\NoNodesAvailableException
-     */
-    public function nextConnection($force = false)
+    public function nextConnection(bool $force = false): ConnectionInterface
     {
         $total = count($this->connections);
         while ($total--) {
-            /** @var AbstractConnection $connection */
+            /**
+ * @var Connection $connection
+*/
             $connection = $this->selector->select($this->connections);
             if ($connection->isAlive() === true) {
                 return $connection;
@@ -47,17 +50,11 @@ class StaticNoPingConnectionPool extends AbstractConnectionPool
         throw new NoNodesAvailableException("No alive nodes found in your cluster");
     }
 
-    public function scheduleCheck()
+    public function scheduleCheck(): void
     {
-
     }
 
-    /**
-     * @param AbstractConnection $connection
-     *
-     * @return bool
-     */
-    private function readyToRevive(AbstractConnection $connection)
+    private function readyToRevive(Connection $connection): bool
     {
         $timeout = min(
             $this->pingTimeout * pow(2, $connection->getPingFailures()),

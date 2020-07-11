@@ -1,54 +1,39 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Cluster;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
- * Class Pendingtasks
+ * Class PendingTasks
+ * Elasticsearch API name cluster.pending_tasks
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Cluster
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Cluster
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class PendingTasks extends AbstractEndpoint
 {
-    /**
-     * @return string
-     */
-    protected function getURI()
-    {
-        $uri   = "/_cluster/pending_tasks";
 
-        return $uri;
+    public function getURI(): string
+    {
+
+        return "/_cluster/pending_tasks";
     }
 
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
+    public function getParamWhitelist(): array
     {
-        return array(
+        return [
             'local',
-            'master_timeout',
-        );
+            'master_timeout'
+        ];
     }
 
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
+    public function getMethod(): string
     {
         return 'GET';
     }

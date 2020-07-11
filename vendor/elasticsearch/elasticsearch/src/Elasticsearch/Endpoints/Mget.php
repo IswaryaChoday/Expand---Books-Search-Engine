@@ -1,102 +1,67 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Mget
+ * Elasticsearch API name mget
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Mget extends AbstractEndpoint
 {
-    /**
-     * @param array $body
-     *
-     * @throws \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     * @return $this
-     */
-    public function setBody($body)
+
+    public function getURI(): string
+    {
+        $index = $this->index ?? null;
+        $type = $this->type ?? null;
+        if (isset($type)) {
+            @trigger_error('Specifying types in urls has been deprecated', E_USER_DEPRECATED);
+        }
+
+        if (isset($index) && isset($type)) {
+            return "/$index/$type/_mget";
+        }
+        if (isset($index)) {
+            return "/$index/_mget";
+        }
+        return "/_mget";
+    }
+
+    public function getParamWhitelist(): array
+    {
+        return [
+            'stored_fields',
+            'preference',
+            'realtime',
+            'refresh',
+            'routing',
+            '_source',
+            '_source_excludes',
+            '_source_includes'
+        ];
+    }
+
+    public function getMethod(): string
+    {
+        return isset($this->body) ? 'POST' : 'GET';
+    }
+
+    public function setBody($body): Mget
     {
         if (isset($body) !== true) {
             return $this;
         }
-
-
         $this->body = $body;
+
         return $this;
-    }
-
-
-
-    /**
-     * @return string
-     */
-    protected function getURI()
-    {
-        $index = $this->index;
-        $type = $this->type;
-        $uri   = "/_mget";
-
-        if (isset($index) === true && isset($type) === true) {
-            $uri = "/$index/$type/_mget";
-        } elseif (isset($index) === true) {
-            $uri = "/$index/_mget";
-        } elseif (isset($type) === true) {
-            $uri = "/_all/$type/_mget";
-        }
-
-        return $uri;
-    }
-
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
-            'fields',
-            'preference',
-            'realtime',
-            'refresh',
-            '_source',
-            '_source_exclude',
-            '_source_include',
-        );
-    }
-
-
-    /**
-     * @return array
-     * @throws \Elasticsearch\Common\Exceptions\RuntimeException
-     */
-    protected function getBody()
-    {
-        if (isset($this->body) !== true) {
-            throw new Exceptions\RuntimeException('Body is required for MGet');
-        }
-        return $this->body;
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
-    {
-        return 'POST';
     }
 }

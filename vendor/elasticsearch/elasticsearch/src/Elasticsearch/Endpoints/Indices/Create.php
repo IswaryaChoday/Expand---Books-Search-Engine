@@ -1,89 +1,57 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
+declare(strict_types = 1);
 
 namespace Elasticsearch\Endpoints\Indices;
 
+use Elasticsearch\Common\Exceptions\RuntimeException;
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Create
+ * Elasticsearch API name indices.create
+ * Generated running $ php util/GenerateEndpoints.php 7.7
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @package  Elasticsearch\Endpoints\Indices
+ * @author   Enrico Zimuel <enrico.zimuel@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-
 class Create extends AbstractEndpoint
 {
-    /**
-     * @param array $body
-     *
-     * @throws \Elasticsearch\Common\Exceptions\InvalidArgumentException
-     * @return $this
-     */
-    public function setBody($body)
+
+    public function getURI(): string
+    {
+        $index = $this->index ?? null;
+
+        if (isset($index)) {
+            return "/$index";
+        }
+        throw new RuntimeException('Missing parameter for the endpoint indices.create');
+    }
+
+    public function getParamWhitelist(): array
+    {
+        return [
+            'include_type_name',
+            'wait_for_active_shards',
+            'timeout',
+            'master_timeout'
+        ];
+    }
+
+    public function getMethod(): string
+    {
+        return 'PUT';
+    }
+
+    public function setBody($body): Create
     {
         if (isset($body) !== true) {
             return $this;
         }
-
-
         $this->body = $body;
+
         return $this;
-    }
-
-
-
-    /**
-     * @throws \Elasticsearch\Common\Exceptions\RuntimeException
-     * @return string
-     */
-    protected function getURI()
-    {
-        if (isset($this->index) !== true) {
-            throw new Exceptions\RuntimeException(
-                'index is required for Create'
-            );
-        }
-        $index = $this->index;
-        $uri   = "/$index";
-
-        if (isset($index) === true) {
-            $uri = "/$index";
-        }
-
-        return $uri;
-    }
-
-
-    /**
-     * @return string[]
-     */
-    protected function getParamWhitelist()
-    {
-        return array(
-            'timeout',
-            'master_timeout',
-        );
-    }
-
-
-    /**
-     * @return string
-     */
-    protected function getMethod()
-    {
-        if (isset($this->body['mappings']) === true) {
-            return 'POST';
-        } else {
-            return 'PUT';
-        }
     }
 }
